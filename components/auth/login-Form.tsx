@@ -1,36 +1,52 @@
-// app/login/page.tsx
+// app/component/login-form.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import { EnvelopeIcon, KeyIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { login } from "@/services/auth.service";
+import { supabase } from "@/lib/supabase/client";
+import {
+  EnvelopeIcon,
+  KeyIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setLoading(true);
-    setError(null);
+    setError("");
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
+      const { error } = await login(email.trim(), password);
 
-      if (error) throw error;
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
       router.push("/admin/dashboard");
+
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("خطایی رخ داده است.");
+      }
     } finally {
       setLoading(false);
     }
@@ -41,8 +57,18 @@ export default function LoginPage() {
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center mb-6">
           <div className="w-14 h-14 bg-blue-600 rounded-2xl mx-auto mb-3 flex items-center justify-center shadow-md shadow-blue-200">
-            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            <svg
+              className="w-7 h-7 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
             </svg>
           </div>
           <h1 className="text-xl font-semibold text-gray-900">ورود</h1>
@@ -55,9 +81,12 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               ایمیل
             </label>
             <div className="relative">
@@ -78,7 +107,10 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               رمز عبور
             </label>
             <div className="relative">
@@ -109,8 +141,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-         
-
           <button
             type="submit"
             disabled={loading}
@@ -119,13 +149,6 @@ export default function LoginPage() {
             {loading ? "در حال ورود..." : "ورود"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-gray-500">
-          حساب ندارید؟{" "}
-          <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-            ثبت‌نام کنید
-          </Link>
-        </p>
       </div>
     </div>
   );
