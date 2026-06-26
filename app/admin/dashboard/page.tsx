@@ -1,31 +1,16 @@
 
 
-import Chart from "@/components/chart";
-import Header from "@/components/header";
-import KpiCards from "@/components/kpiCards";
-import OrderTable from "@/components/orderTable";
-import Sidebar from "@/components/sidebar-in-dashboard";
+import Chart from "@/components/dashboard/chart";
+import KpiCards from "@/components/dashboard/kpiCards";
+import OrderTable from "@/components/dashboard/orderTable";
 export default async function DashboardPage() {
   return (
-    <div className="min-h-screen bg-slate-100 flex">
-      <Sidebar />
+    <>
+      <KpiCards />
 
-      <main className="flex-1">
-      
-        
-        <Header/>
-      
-        <section className="p-8">
-          
-          <KpiCards/>
+      <Chart />
 
-       
-          <Chart/>
-
-          
-          <OrderTable/>
-        </section>
-      </main>
-    </div>
+      <OrderTable />
+    </>
   );
 }

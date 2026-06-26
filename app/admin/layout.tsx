@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+import Sidebar from "@/components/dashboard/sidebar";
+import Header from "@/components/dashboard/header";
+
 export default async function AdminLayout({
   children,
 }: {
@@ -30,5 +33,22 @@ export default async function AdminLayout({
     redirect("/employee/dashboard");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex bg-slate-100">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Header */}
+        <Header />
+
+        {/* Pages */}
+        <main className="flex-1 overflow-y-auto p-8">
+          {children}
+          
+        </main>
+      </div>
+    </div>
+  );
 }
