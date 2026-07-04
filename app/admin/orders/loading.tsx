@@ -1,4 +1,3 @@
-// app/dashboard/loading.tsx
 export default function OrdersLoading() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">

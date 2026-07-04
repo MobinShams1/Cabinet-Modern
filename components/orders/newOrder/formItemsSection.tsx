@@ -1,4 +1,3 @@
-// app/dashboard/orders/_components/FormItemsSection.tsx
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";

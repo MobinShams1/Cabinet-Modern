@@ -1,4 +1,3 @@
-// app/dashboard/orders/_components/FormTechnicalSection.tsx
 "use client";
 
 interface FormTechnicalSectionProps {

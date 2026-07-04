@@ -1,9 +1,6 @@
-// app/dashboard/orders/page.tsx
 import { createClient } from "@/lib/supabase/server";
 import OrderListContainer from "../../../components/orders/orderListContainer";
-import { Order } from "@/types/order";
 
-// این دیتای موقت (Sample Data) است؛ بعداً جایش را به فچ واقعی از Supabase می‌دهد
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const revalidate = 0;

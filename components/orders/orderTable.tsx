@@ -1,4 +1,3 @@
-// app/dashboard/orders/_components/OrderTable.tsx
 "use client";
 
 import { Order } from "@/types/order";
@@ -9,9 +8,18 @@ interface OrderTableProps {
   orders: Order[];
   selectedOrderId?: string;
   onSelectOrder: (order: Order) => void;
+  onDeleteOrder: (rawId: number) => void;
+  onEditOrder: (order: Order) => void;
 }
 
-export default function OrderTable({ orders, selectedOrderId, onSelectOrder }: OrderTableProps) {
+export default function OrderTable({ 
+  orders, 
+  selectedOrderId, 
+  onSelectOrder, 
+  onDeleteOrder,
+  onEditOrder 
+}: OrderTableProps) {
+  
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fa-IR').format(price);
   };
@@ -49,13 +57,24 @@ export default function OrderTable({ orders, selectedOrderId, onSelectOrder }: O
                 <td className="p-4"><StatusBadge status={order.status} /></td>
                 <td className="p-4" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => onSelectOrder(order)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
+                    <button 
+                      onClick={() => onSelectOrder(order)} 
+                      className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                    >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                    
+                    <button 
+                      onClick={() => onEditOrder(order)} 
+                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                    
+                    <button 
+                      onClick={() => onDeleteOrder(order.rawId)} 
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

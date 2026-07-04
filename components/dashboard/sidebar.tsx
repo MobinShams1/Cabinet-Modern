@@ -1,4 +1,3 @@
-// app/dashboard/components/Sidebar.tsx
 "use client";
 
 import { useState } from "react";
@@ -95,7 +94,6 @@ export default function Sidebar() {
         )}
       </button>
 
-      {/* لوگو */}
       <div
         className={`p-6 flex items-center ${isSidebarOpen ? "justify-start" : "justify-center"}`}
       >
@@ -109,7 +107,6 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* منوها */}
       <nav className="px-3 space-y-1">
         {menuItems.map((item) => (
           <MenuLink
@@ -127,12 +124,9 @@ export default function Sidebar() {
       {loading && (
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200">
           <div className="flex items-center gap-3">
-            {/* اسکلتون آواتار */}
             <div className="w-10 h-10 rounded-full bg-slate-200 animate-pulse" />
             <div className="flex-1 min-w-0 space-y-2">
-              {/* اسکلتون نام */}
               <div className="h-4 bg-slate-200 rounded w-3/4 animate-pulse" />
-              {/* اسکلتون ایمیل */}
               <div className="h-3 bg-slate-200 rounded w-1/2 animate-pulse" />
             </div>
           </div>
