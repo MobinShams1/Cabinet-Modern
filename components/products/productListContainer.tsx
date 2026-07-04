@@ -4,14 +4,16 @@ import { useState } from "react";
 import { Search, Filter, Plus } from "lucide-react";
 import ProductGrid from "./productGrid";
 import ProductDetailSidebar from "./productDetailsSidebar";
+import ProductModal from "./productModal";
+import EditProductModal from "./editProductModal";
 
 export interface Product {
   id: string;
   rawId: number;
   name: string;
   category: "cabinet" | "material" | "accessory";
-  type: string; 
-  pricePerMeter: number; 
+  type: string;
+  pricePerMeter: number;
   stockStatus: "in-stock" | "low-stock" | "out-of-stock";
   description: string;
 }
@@ -20,30 +22,56 @@ interface ProductListContainerProps {
   initialProducts: Product[];
 }
 
-export default function ProductListContainer({ initialProducts }: ProductListContainerProps) {
+export default function ProductListContainer({
+  initialProducts,
+}: ProductListContainerProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.type.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
+  const handleProductAdded = (newProduct: Product) => {
+    setProducts((prev) => [newProduct, ...prev]);
+  };
+
+  const handleProductUpdated = (updatedProduct: Product) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)),
+    );
+    setSelectedProduct(updatedProduct);
+  };
+
+  const handleProductDeleted = (deletedId: string) => {
+    setProducts((prev) => prev.filter((p) => p.id !== deletedId));
+    setSelectedProduct(null);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.type.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      categoryFilter === "all" || product.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
   return (
     <div className="h-full bg-slate-50/50 flex flex-col p-6">
-      
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-800">کاتالوگ محصولات و متریال</h1>
-          <p className="text-xs text-slate-500 mt-1">مدیریت قیمت فاکتور، انواع کابینت، ورق‌های MDF و تجهیزات جانبی</p>
+          <h1 className="text-xl font-bold text-slate-800">
+            کاتالوگ محصولات و متریال
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            مدیریت قیمت فاکتور، انواع کابینت، ورق‌های MDF و تجهیزات جانبی
+          </p>
         </div>
-        <button 
+        <button
           className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition shadow-sm shadow-indigo-100"
+          onClick={() => setIsNewModalOpen(true)}
         >
           <Plus className="w-4 h-4" />
           افزودن محصول جدید
@@ -77,10 +105,9 @@ export default function ProductListContainer({ initialProducts }: ProductListCon
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 items-stretch flex-1">
-        
         <div className="flex-1 min-w-0">
-          <ProductGrid 
-            products={filteredProducts} 
+          <ProductGrid
+            products={filteredProducts}
             selectedProductId={selectedProduct?.id}
             onSelectProduct={(product) => {
               setSelectedProduct(product);
@@ -89,12 +116,27 @@ export default function ProductListContainer({ initialProducts }: ProductListCon
           />
         </div>
 
-        <ProductDetailSidebar 
+        <ProductDetailSidebar
           product={selectedProduct}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          onEditClick={() => setIsEditModalOpen(true)}
+          onProductDeleted={handleProductDeleted}
         />
       </div>
+
+      <ProductModal
+        isOpen={isNewModalOpen}
+        onClose={() => setIsNewModalOpen(false)}
+        onProductAdded={handleProductAdded}
+      />
+
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={selectedProduct}
+        onProductUpdated={handleProductUpdated}
+      />
     </div>
   );
 }
