@@ -7,9 +7,10 @@ interface CustomerDetailSidebarProps {
   customer: Customer | null;
   isOpen: boolean;
   onClose: () => void;
+  onEditClick: () => void;
 }
 
-export default function CustomerDetailSidebar({ customer, isOpen, onClose }: CustomerDetailSidebarProps) {
+export default function CustomerDetailSidebar({ customer, isOpen, onClose,onEditClick }: CustomerDetailSidebarProps) {
   if (!isOpen || !customer) return null;
 
   return (
@@ -72,7 +73,7 @@ export default function CustomerDetailSidebar({ customer, isOpen, onClose }: Cus
       </div>
 
       <div className="p-6 border-t border-slate-100 sticky bottom-0 bg-white">
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition shadow-sm">
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition shadow-sm" onClick={onEditClick}>
           <Edit2 className="w-4 h-4" />
           ویرایش اطلاعات مشتری
         </button>

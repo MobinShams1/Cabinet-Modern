@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Search, Filter } from "lucide-react";
 import CustomerTable from "./customerTable";
 import CustomerDetailSidebar from "./customerDetailsSidebar";
-
+import EditCustomerModal from "./editCustomerModal";
 export interface Customer {
   id: string;
   rawId: number;
@@ -21,28 +21,45 @@ interface CustomerListContainerProps {
   initialCustomers: Customer[];
 }
 
-export default function CustomerListContainer({ initialCustomers }: CustomerListContainerProps) {
-  const [customers] = useState<Customer[]>(initialCustomers);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+export default function CustomerListContainer({
+  initialCustomers,
+}: CustomerListContainerProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          customer.phone.includes(searchQuery);
-    const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
+  const filteredCustomers = customers.filter((customer) => {
+    const matchesSearch =
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone.includes(searchQuery);
+    const matchesStatus =
+      statusFilter === "all" || customer.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
+  const handleCustomerUpdated = (updatedCustomer: Customer) => {
+    setCustomers((prev) =>
+      prev.map((c) =>
+        c.rawId === updatedCustomer.rawId ? updatedCustomer : c,
+      ),
+    );
+    setSelectedCustomer(updatedCustomer); // بروزرسانی در سایدبار همزمان با جدول
+  };
+
   return (
     <div className="h-full flex flex-col lg:flex-row bg-slate-50/50">
-      <div className={`flex-1 flex flex-col p-6 ${isDetailOpen && selectedCustomer ? 'lg:w-2/3' : 'w-full'} transition-all duration-300`}>
-        
+      <div
+        className={`flex-1 flex flex-col p-6 ${isDetailOpen && selectedCustomer ? "lg:w-2/3" : "w-full"} transition-all duration-300`}
+      >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-xl font-bold text-slate-800">مدیریت مشتریان</h1>
-            <p className="text-xs text-slate-500 mt-1">لیست خریداران، تاریخچه سفارشات کابینت و وضعیت حساب‌ها</p>
+            <p className="text-xs text-slate-500 mt-1">
+              لیست خریداران، تاریخچه سفارشات کابینت و وضعیت حساب‌ها
+            </p>
           </div>
         </div>
 
@@ -72,8 +89,8 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
           </div>
         </div>
 
-        <CustomerTable 
-          customers={filteredCustomers} 
+        <CustomerTable
+          customers={filteredCustomers}
           selectedCustomerId={selectedCustomer?.id}
           onSelectCustomer={(c) => {
             setSelectedCustomer(c);
@@ -82,10 +99,18 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
         />
       </div>
 
-      <CustomerDetailSidebar 
+      <CustomerDetailSidebar
         customer={selectedCustomer}
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
+        onEditClick={() => setIsEditModalOpen(true)}
+      />
+
+      <EditCustomerModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        customer={selectedCustomer} 
+        onCustomerUpdated={handleCustomerUpdated} 
       />
     </div>
   );
