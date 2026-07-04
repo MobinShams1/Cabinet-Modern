@@ -60,7 +60,7 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
      
-        <div className="relative">
+        {/* <div className="relative">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -69,7 +69,7 @@ export default function Header() {
             placeholder="جستجو..."
             className="border border-slate-300 rounded-lg pr-10 pl-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition w-48 md:w-64"
           />
-        </div>
+        </div> */}
 
         <div className="relative">
           <button
