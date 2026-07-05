@@ -25,6 +25,7 @@ export default function Header() {
     if (pathname.includes("/admin/customers")) return "مدیریت مشتریان و کارفرمایان";
     if (pathname.includes("/admin/orders")) return "سفارشات و پروژه‌های کابینت";
     if (pathname.includes("/admin/profile")) return "پروفایل کاربری";
+    if(pathname.includes("/admin/reports")) return "گزارشات";
     return "داشبورد مدیریت کارگاه"; 
   };
 

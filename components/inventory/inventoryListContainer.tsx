@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Filter, ArrowUpRight, ArrowDownLeft, Package } from "lucide-react";
+import { Search, Filter, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import InventoryTable from "./inventoryTable";
 import InventorySidebar from "./inventorySidebar";
 import InventoryGuide from "./inventoryGuide";
