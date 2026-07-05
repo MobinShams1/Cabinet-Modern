@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Loader2 } from "lucide-react";
 import { createNewProduct } from "@/actions/productsAction";
+import { toast } from "sonner"; 
 
 interface ProductFormProps {
   onClose: () => void;
@@ -21,7 +22,7 @@ export default function ProductForm({ onClose, onProductAdded }: ProductFormProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !type || pricePerMeter <= 0) {
-      alert("لطفاً تمامی فیلدهای اجباری را با مقادیر معتبر پر کنید.");
+      toast.error("لطفا تمامی فیلد ها را پر کنید !")
       return;
     }
 
@@ -44,9 +45,10 @@ export default function ProductForm({ onClose, onProductAdded }: ProductFormProp
         stockStatus,
         description,
       });
+      toast.success(`محصول "${name}" با موفقیت به کاتالوگ اضافه شد.`);
       onClose();
     } else {
-      alert(`خطا در ثبت محصول: ${result.error}`);
+      toast.error(`خطا در ثبت محصول: ${result.error}`);
     }
   };
 

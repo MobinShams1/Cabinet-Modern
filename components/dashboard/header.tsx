@@ -1,13 +1,12 @@
+// @/components/Header.tsx (یا مسیر فعلی کامپوننت هدر شما)
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter, usePathname } from "next/navigation"; // 👈 اضافه شدن usePathname برای تشخیص صفحه
 import { useUser } from "../../context/userContext";
 import { 
-  Search, 
   ChevronDown, 
   LogOut, 
-  Settings, 
   User,
 } from "lucide-react";
 import { logout } from "@/services/auth.service";
@@ -15,11 +14,20 @@ import { logout } from "@/services/auth.service";
 export default function Header() {
   const { user, loading, refreshUser } = useUser();
   const router = useRouter();
+  const pathname = usePathname(); // 👈 خواندن آدرس جاری مرورگر
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  // تابع خروج از سیستم
+  const getPageTitle = () => {
+    if (pathname.includes("/admin/dashboard")) return "داشبورد";
+    if (pathname.includes("/admin/products")) return "کاتالوگ و مدیریت محصولات";
+    if (pathname.includes("/admin/inventory")) return "کنترل و موجودی انبار";
+    if (pathname.includes("/admin/customers")) return "مدیریت مشتریان و کارفرمایان";
+    if (pathname.includes("/admin/orders")) return "سفارشات و پروژه‌های کابینت";
+    if (pathname.includes("/admin/profile")) return "پروفایل کاربری";
+    return "داشبورد مدیریت کارگاه"; 
+  };
+
   const handleLogOut = async () => {
     try {
       setIsLoggingOut(true);
@@ -56,21 +64,11 @@ export default function Header() {
 
   return (
     <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between">
-      <h2 className="text-2xl font-bold text-slate-800">داشبورد</h2>
+      <h2 className="text-xl font-bold text-slate-800 transition-all duration-200">
+        {getPageTitle()}
+      </h2>
 
       <div className="flex items-center gap-4">
-     
-        {/* <div className="relative">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="جستجو..."
-            className="border border-slate-300 rounded-lg pr-10 pl-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition w-48 md:w-64"
-          />
-        </div> */}
-
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -106,7 +104,7 @@ export default function Header() {
           </button>
 
           {isDropdownOpen && !loading && (
-            <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
+            <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
               <div className="px-4 py-3 border-b border-slate-100">
                 <p className="text-sm font-medium text-slate-800">
                   {user?.full_name || "کاربر"}
@@ -122,19 +120,18 @@ export default function Header() {
                   setIsDropdownOpen(false);
                   router.push("/admin/profile");
                 }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-right"
               >
-                <User className="w-4 h-4" />
-                پروفایل
+                <User className="w-4 h-4 text-slate-400" />
+                پروفایل کاربری
               </button>
 
-              
               <div className="border-t border-slate-100 my-1" />
 
               <button
                 onClick={handleLogOut}
                 disabled={isLoggingOut}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition disabled:opacity-50 disabled:cursor-not-allowed text-right"
               >
                 {isLoggingOut ? (
                   <>

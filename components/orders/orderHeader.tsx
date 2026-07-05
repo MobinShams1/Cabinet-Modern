@@ -3,6 +3,7 @@
 import { Plus } from "lucide-react";
 import NewOrderModal from "@/app/admin/orders/@modal/(.)new/page";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function OrderHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,8 +28,7 @@ export default function OrderHeader() {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onSubmitSuccess={() => {
-             
-              console.log("سفارش با موفقیت ثبت شد!");
+              toast.success("سفارش با موفقیت ثبت شد.");
             }}
           />
         </div>

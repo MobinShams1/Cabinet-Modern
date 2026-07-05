@@ -1,3 +1,4 @@
+// app/dashboard/products/page.tsx
 import ProductListContainer from "@/components/products/productListContainer";
 import ProductStats from "@/components/products/productStats";
 import { createClient } from "@/lib/supabase/server";
@@ -7,9 +8,11 @@ export const revalidate = 0;
 export default async function ProductsPage() {
   const supabase = await createClient();
 
+  // 👈 فیلتر کردن دیتابیس: فقط محصولاتی که مربوط به فاکتور و فروش هستند (نه ورق خام انبار)
   const { data: productsData, error } = await supabase
     .from("products")
     .select("*")
+    .in("category", ["cabinet", "accessory"]) // 👈 فقط کابینت و یراق‌آلات فروشی
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -26,7 +29,7 @@ export default async function ProductsPage() {
       rawId: product.id,
       name: product.name,
       category: product.category || "cabinet",
-      type: product.style_type || "نامشخص", 
+      type: product.style_type || "نامشخص",
       pricePerMeter: Number(product.price) || 0,
       stockStatus,
       description: product.description || "بدون توضیحات فنی",
@@ -40,12 +43,7 @@ export default async function ProductsPage() {
 
   return (
     <div className="h-full bg-slate-50/50 flex flex-col">
-      <ProductStats 
-        totalItems={totalItems}
-        outOfStock={outOfStockItems}
-        avgPrice={averageCabinetPrice}
-      />
-
+      <ProductStats totalItems={totalItems} outOfStock={outOfStockItems} avgPrice={averageCabinetPrice} />
       <div className="flex-1">
         <ProductListContainer initialProducts={formattedProducts} />
       </div>

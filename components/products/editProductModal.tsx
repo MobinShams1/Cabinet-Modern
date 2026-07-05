@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Save, Loader2 } from "lucide-react";
 import { updateProduct } from "@/actions/productsAction";
-import { Product } from "./ProductListContainer";
+import { Product } from "./productListContainer";
+import { toast } from "sonner"; 
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -30,7 +31,6 @@ export default function EditProductModal({ isOpen, onClose, product, onProductUp
       setType(product.type);
       setPricePerMeter(product.pricePerMeter);
       setDescription(product.description || "");
-      // تنظیم مقدار حدودی استوک برای مدیریت لودینگ
       setStock(product.stockStatus === "out-of-stock" ? 0 : product.stockStatus === "low-stock" ? 3 : 15);
     }
   }, [product, isOpen]);
@@ -57,9 +57,10 @@ export default function EditProductModal({ isOpen, onClose, product, onProductUp
         stockStatus,
         description,
       });
+      toast.success("تغییرات مشخصات کالا با موفقیت ذخیره شد.");
       onClose();
     } else {
-      alert(`خطا در ویرایش کالا: ${result.error}`);
+      toast.error(`خطا در ویرایش کالا: ${result.error}`);
     }
   };
 
