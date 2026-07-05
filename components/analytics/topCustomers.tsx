@@ -1,4 +1,3 @@
-// app/dashboard/analytics/_components/TopCustomers.tsx
 "use client";
 
 import { Award } from "lucide-react";

@@ -1,4 +1,3 @@
-// app/dashboard/analytics/_components/KpiCards.tsx
 "use client";
 
 import { DollarSign, TrendingUp, Users, Clock } from "lucide-react";

@@ -7,11 +7,9 @@ export const revalidate = 0;
 export default async function AnalyticsPage() {
   const supabase = await createClient();
 
-  // ۱. فچ کردن دیتای سفارشات جهت محاسبه کل فروش و سود
   const { data: ordersData, error: ordersError } = await supabase
     .from("orders")
     .select("total_price, status, created_at, cost_price");
-  // ۲. فچ کردن بدهی مشتریان
   const { data: customersData, error: customersError } = await supabase
     .from("customers")
     .select("id, full_name, total_spent, total_orders, debt");
@@ -26,7 +24,6 @@ export default async function AnalyticsPage() {
   const rawOrders = ordersData || [];
   const rawCustomers = customersData || [];
 
-  // محاسبه شاخص‌های مالی (KPIs)
   const totalSales = rawOrders.reduce(
     (sum, o) => sum + (Number(o.total_price) || 0),
     0,
@@ -35,7 +32,7 @@ export default async function AnalyticsPage() {
     (sum, o) => sum + (Number(o.cost_price) || 0),
     0,
   );
-  const netProfit = totalSales - totalCosts; // درآمد منهای هزینه قطعات و متریال
+  const netProfit = totalSales - totalCosts; 
 
   const receivables = rawCustomers.reduce(
     (sum, c) => sum + (Number(c.debt) || 0),
@@ -45,7 +42,6 @@ export default async function AnalyticsPage() {
     (o) => o.status === "in-progress" || o.status === "installing",
   ).length;
 
-  // فرمت‌دهی لیست مشتریان برتر
   const topCustomers = [...rawCustomers]
     .sort((a, b) => (b.total_spent || 0) - (a.total_spent || 0))
     .slice(0, 5)
@@ -56,7 +52,6 @@ export default async function AnalyticsPage() {
       totalSpent: Number(c.total_spent) || 0,
     }));
 
-  // ۱. یک آرایه پایه برای ۱۲ ماه سال با مقدار صفر می‌سازیم
   const monthlySales: Record<string, number> = {
     فروردین: 0,
     اردیبهشت: 0,
@@ -72,17 +67,14 @@ export default async function AnalyticsPage() {
     اسفند: 0,
   };
 
-  // ۲. روی تک‌تک سفارشات دیتابیس می‌چرخیم و مبلغ را به ماه مربوط به خودش اضافه می‌کنیم
   rawOrders.forEach((order) => {
     const totalPrice = Number(order.total_price) || 0;
     if (!order.created_at) return;
 
-    // تبدیل تاریخ میلادی دیتابیس به تاریخ شمسی
     const jalaaliDate = new Date(order.created_at).toLocaleDateString(
       "fa-IR-u-nu-latn",
     );
 
-    // استخراج نام ماه (مثلاً از "1405/04/12" کلمه ماه را برمی‌داریم)
     const monthNumber = parseInt(jalaaliDate.split("/")[1], 10);
 
     const monthNames = [

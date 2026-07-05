@@ -1,8 +1,7 @@
-// @/components/Header.tsx (یا مسیر فعلی کامپوننت هدر شما)
 "use client";
 
 import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation"; // 👈 اضافه شدن usePathname برای تشخیص صفحه
+import { useRouter, usePathname } from "next/navigation";
 import { useUser } from "../../context/userContext";
 import { 
   ChevronDown, 
@@ -14,7 +13,7 @@ import { logout } from "@/services/auth.service";
 export default function Header() {
   const { user, loading, refreshUser } = useUser();
   const router = useRouter();
-  const pathname = usePathname(); // 👈 خواندن آدرس جاری مرورگر
+  const pathname = usePathname(); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 

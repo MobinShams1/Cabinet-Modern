@@ -1,4 +1,3 @@
-// app/dashboard/analytics/_components/SalesChart.tsx
 "use client";
 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
