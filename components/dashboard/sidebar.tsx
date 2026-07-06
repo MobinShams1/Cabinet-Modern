@@ -56,9 +56,9 @@ const menuItems = [
   },
   {
     id: "users",
-    label: "کاربران",
+    label: "کارکنان",
     icon: <UserCog className="w-5 h-5" />,
-    href: "users",
+    href: "employee",
   },
   {
     id: "settings",
@@ -82,7 +82,6 @@ export default function Sidebar() {
         isSidebarOpen ? "w-64" : "w-20"
       }`}
     >
-      {/* دکمه جمع کردن/باز کردن */}
       <button
         onClick={toggleSidebar}
         className="absolute -right-3 top-6 bg-white border border-slate-200 rounded-full p-1.5 shadow-md hover:bg-slate-50 transition z-10"

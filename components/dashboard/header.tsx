@@ -25,7 +25,8 @@ export default function Header() {
     if (pathname.includes("/admin/orders")) return "سفارشات و پروژه‌های کابینت";
     if (pathname.includes("/admin/profile")) return "پروفایل کاربری";
     if(pathname.includes("/admin/reports")) return "گزارشات";
-    return "داشبورد مدیریت کارگاه"; 
+    if(pathname.includes("/admin/employee")) return "کارکنان";
+    
   };
 
   const handleLogOut = async () => {
