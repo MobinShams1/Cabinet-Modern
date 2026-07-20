@@ -8,6 +8,7 @@ import { toast } from "sonner";
 interface AddStaffModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStaffAdded: (newMember :any) => void;
 }
 
 export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
@@ -39,9 +40,10 @@ export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
       setLoading(true);
       const res = await createStaffMember(formData);
 
-      if (res.success) {
+      if (res.success && res.newMember) {
         toast.success(`همکار جدید (${formData.fullName}) با موفقیت به سیستم اضافه شد.`);
         setFormData({ fullName: "", email: "", phone: "", role: "employee", password: "" });
+        onStaffAdded(res.newMember);
         onClose();
       } else {
         toast.error(`خطا: ${res.error}`);

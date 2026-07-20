@@ -1,15 +1,21 @@
 "use client";
 
-import { StaffMember } from "./staffListContainer";
+import { StaffMember } from "./staffListContainer"; 
 import { Shield, Users, ChevronLeft, Inbox } from "lucide-react";
 
 interface StaffTableProps {
   staff: StaffMember[];
   selectedId?: string;
   onSelectMember: (member: StaffMember) => void;
+  currentUserId: string; 
 }
 
-export default function StaffTable({ staff, selectedId, onSelectMember }: StaffTableProps) {
+export default function StaffTable({
+  staff,
+  selectedId,
+  onSelectMember,
+  currentUserId, 
+}: StaffTableProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden h-full flex flex-col">
       <div className="overflow-x-auto">
@@ -25,41 +31,66 @@ export default function StaffTable({ staff, selectedId, onSelectMember }: StaffT
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {staff.map((member) => (
-              <tr
-                key={member.rawId}
-                onClick={() => onSelectMember(member)}
-                className={`hover:bg-slate-50/80 transition cursor-pointer text-slate-700 ${
-                  selectedId === member.id ? "bg-indigo-50/40 font-medium" : ""
-                }`}
-              >
-                <td className="p-4 font-medium text-slate-900">{member.fullName}</td>
-                <td className="p-4 font-mono text-xs text-slate-500">{member.email}</td>
-                <td className="p-4 text-xs text-slate-600 font-medium">{member.phone || "—"}</td>
-                <td className="p-4">
-                  {member.role === "admin" ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
-                      <Shield className="w-3 h-3" /> مدیر سیستم
+            {staff.map((member) => {
+              const isMe =
+                member.rawId === currentUserId ||
+                member.email === currentUserId;
+
+              return (
+                <tr
+                  key={member.rawId}
+                  onClick={() => onSelectMember(member)}
+                  className={`hover:bg-slate-50/80 transition cursor-pointer text-slate-700 ${
+                    selectedId === member.id
+                      ? "bg-indigo-50/40 font-medium"
+                      : ""
+                  } ${isMe ? "bg-slate-50/40" : ""}`}
+                >
+                  <td className="p-4 flex items-center gap-2">
+                    <span className="font-medium text-slate-900">
+                      {member.fullName}
                     </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                      <Users className="w-3 h-3" /> کارکنان کارگاه
-                    </span>
-                  )}
-                </td>
-                <td className="p-4">
-                  {member.status === "active" ? (
-                    <span className="inline-flex items-center w-2 h-2 rounded-full bg-emerald-500 mr-1" title="فعال" />
-                  ) : (
-                    <span className="inline-flex items-center w-2 h-2 rounded-full bg-rose-400 mr-1" title="مسدود" />
-                  )}
-                  <span className="text-xs mr-2 text-slate-600">{member.status === "active" ? "فعال" : "دسترسی مسدود"}</span>
-                </td>
-                <td className="p-4 text-center">
-                  <ChevronLeft className="w-4 h-4 text-slate-300 mx-auto" />
-                </td>
-              </tr>
-            ))}
+                    {isMe && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-600 text-white shadow-sm shadow-indigo-100 animate-pulse">
+                        شما
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-4 font-mono text-xs text-slate-500">
+                    {member.email}
+                  </td>
+                  <td className="p-4 text-xs text-slate-600 font-medium">
+                    {member.phone || "—"}
+                  </td>
+                  <td className="p-4">
+                    {member.role === "admin" ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                        <Shield className="w-3 h-3" /> مدیر سیستم
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <Users className="w-3 h-3" /> کارکنان کارگاه
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          member.status === "active" ? "bg-emerald-500" : "bg-rose-400"
+                        }`}
+                      />
+                      <span className="text-xs text-slate-600">
+                        {member.status === "active" ? "فعال" : "دسترسی مسدود"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <ChevronLeft className="w-4 h-4 text-slate-300 mx-auto" />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

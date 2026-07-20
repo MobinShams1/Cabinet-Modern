@@ -8,7 +8,7 @@ interface CreateStaffInput {
   email: string;
   phone: string;
   role: "admin" | "employee";
-  password: string; 
+  password: string;
 }
 
 export async function createStaffMember(data: CreateStaffInput) {
@@ -33,26 +33,41 @@ export async function createStaffMember(data: CreateStaffInput) {
       return { success: false, error: "عملیات ساخت حساب با خطا مواجه شد." };
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .insert([
-        {
-          id: authData.user.id,
-          full_name: data.fullName,
-          phone: data.phone,
-          email: data.email,
-          role: data.role,
-        },
-      ]);
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      {
+        id: authData.user.id,
+        full_name: data.fullName,
+        phone: data.phone,
+        email: data.email,
+        role: data.role,
+        status: "active",
+      },
+      { onConflict: "id" },
+    );
 
     if (profileError) {
       return { success: false, error: profileError.message };
     }
 
-    revalidatePath("/dashboard/staff");
-    return { success: true };
+    const newStaffFormatted = {
+      id: `STF-${String(authData.user.id).substring(0, 4)}`,
+      rawId: authData.user.id,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone || "ثبت نشده",
+      role: data.role,
+      status: "active" as const,
+      createdAt: new Date().toLocaleDateString("fa-IR"),
+    };
+
+    revalidatePath("/dashboard/employee");
+
+    return { success: true, newMember:newStaffFormatted };
 
   } catch (err: any) {
-    return { success: false, error: err.message || "خطای غیرمنتظره‌ای رخ داد." };
+    return {
+      success: false,
+      error: err.message || "خطای غیرمنتظره‌ای رخ داد.",
+    };
   }
 }

@@ -5,11 +5,18 @@ export const revalidate = 0;
 
 export default async function StaffPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profilesData, error } = await supabase
     .from("profiles")
     .select("id, full_name, email, phone, role, status, created_at")
     .order("role", { ascending: true });
+
+  const { data: myProfile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user?.id)
+    .single();
 
   if (error) {
     console.error("خطا در دریافت لیست کارکنان از دیتابیس:", error.message);
@@ -39,7 +46,11 @@ export default async function StaffPage() {
   return (
     <div className="h-full bg-slate-50/50 flex flex-col">
       <div className="flex-1">
-        <StaffListContainer initialStaff={formattedStaff} />
+        <StaffListContainer
+          initialStaff={formattedStaff}
+          currentUserId={user?.id || ""}
+          currentUserRole={myProfile?.role || "employee"}
+        />
       </div>
     </div>
   );

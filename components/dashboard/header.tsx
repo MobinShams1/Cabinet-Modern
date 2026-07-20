@@ -27,6 +27,7 @@ export default function Header() {
     if(pathname.includes("/admin/reports")) return "گزارشات";
     if(pathname.includes("/admin/employee")) return "کارکنان";
     
+    
   };
 
   const handleLogOut = async () => {

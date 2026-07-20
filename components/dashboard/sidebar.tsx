@@ -59,13 +59,7 @@ const menuItems = [
     label: "کارکنان",
     icon: <UserCog className="w-5 h-5" />,
     href: "employee",
-  },
-  {
-    id: "settings",
-    label: "تنظیمات",
-    icon: <Settings className="w-5 h-5" />,
-    href: "settings",
-  },
+  }
 ];
 
 export default function Sidebar() {

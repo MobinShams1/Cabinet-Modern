@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ShieldAlert, UserPlus, Filter } from "lucide-react";
+import { Search, UserPlus, Filter } from "lucide-react";
 import StaffTable from "./staffTable";
 import StaffSidebar from "./staffSidebar";
-import AddStaffModal from "./addEmployeeModal";
+import AddStaffModal from "./addStaffModal";
 
 export interface StaffMember {
   id: string;
-  rawId: number;
+  rawId: string;
   fullName: string;
   email: string;
   phone: string;
@@ -19,10 +19,14 @@ export interface StaffMember {
 
 interface StaffListContainerProps {
   initialStaff: StaffMember[];
+  currentUserId: string;
+  currentUserRole: "admin" | "employee";
 }
 
 export default function StaffListContainer({
   initialStaff,
+  currentUserId,
+  currentUserRole,
 }: StaffListContainerProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [staff, setStaff] = useState<StaffMember[]>(initialStaff);
@@ -40,8 +44,12 @@ export default function StaffListContainer({
     return matchesSearch && member.role === roleFilter;
   });
 
+  const handleStaffAdded = (newMember: StaffMember) => {
+    setStaff((prev) => [newMember, ...prev]);
+  };
+
   const handleStatusUpdated = (
-    rawId: number,
+    rawId: string,
     newStatus: "active" | "suspended",
     newRole: "admin" | "employee",
   ) => {
@@ -59,52 +67,52 @@ export default function StaffListContainer({
 
   return (
     <div className="h-full bg-slate-50/50 flex flex-col p-6">
-      {/* هدر صفحه کارکنان */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl font-bold text-slate-800">
             مدیریت کارکنان و دسترسی‌ها
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            مدیریت سطوح دسترسی کاربران پنل، تعویض نقش‌ها و وضعیت فعال بودن پرسنل
+            مشاهده سطوح دسترسی کاربران پنل، تعویض نقش‌ها و وضعیت فعال بودن پرسنل
+            توسط مدیریت
           </p>
         </div>
-        <button
-          className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium transition shadow-sm shadow-indigo-100"
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          <UserPlus className="w-4 h-4" />
-          دعوت کاربر / همکار جدید
-        </button>
+
+        {currentUserRole === "admin" && (
+          <button
+            className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium transition shadow-sm"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            <UserPlus className="w-4 h-4" />
+            دعوت کاربر / همکار جدید
+          </button>
+        )}
       </div>
 
-      {/* بار فیلترها */}
       <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-3 mb-6">
         <div className="flex-1 relative">
           <Search className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="جستجوی نام، نشانی ایمیل یا شماره تماس همکار..."
+            placeholder="جستجوی نام یا نشانی ایمیل همکار..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-9 pl-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-800"
           />
         </div>
         <div className="flex items-center gap-2 min-w-[160px]">
-          <Filter className="w-4 h-4 text-slate-400" />
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700"
           >
             <option value="all">همه نقش‌ها</option>
-            <option value="admin">👑 مدیران سیستم (Admin)</option>
-            <option value="employee">🛠️ کارکنان کارگاه (Employee)</option>
+            <option value="admin">👑 مدیران سیستم</option>
+            <option value="employee">🛠️ کارکنان کارگاه</option>
           </select>
         </div>
       </div>
 
-      {/* بخش اصلی جدول و سایدبار تنظیمات دسترسی */}
       <div className="flex flex-col lg:flex-row gap-6 items-stretch flex-1">
         <div className="flex-1 min-w-0">
           <StaffTable
@@ -114,6 +122,7 @@ export default function StaffListContainer({
               setSelectedStaff(member);
               setIsSidebarOpen(true);
             }}
+            currentUserId={currentUserId}
           />
         </div>
 
@@ -122,12 +131,15 @@ export default function StaffListContainer({
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onDataUpdated={handleStatusUpdated}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
         />
       </div>
 
       <AddStaffModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        onStaffAdded={handleStaffAdded}
       />
     </div>
   );
