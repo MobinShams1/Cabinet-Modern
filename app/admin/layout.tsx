@@ -3,6 +3,20 @@ import { createClient } from "@/lib/supabase/server";
 
 import Sidebar from "@/components/dashboard/sidebar";
 import Header from "@/components/dashboard/header";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | سامانه Cabinet ERP",
+    default: "داشبورد مدیریت | Cabinet ERP",
+  },
+  description: "سامانه یکپارچه مدیریت کارگاه، انبارداری و تولید کابینت",
+  robots: {
+    index: false, 
+    follow: false,
+  },
+};
+
 
 export default async function AdminLayout({
   children,

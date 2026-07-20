@@ -1,7 +1,13 @@
 import StaffListContainer from "@/components/employee/staffListContainer";
 import { createClient } from "@/lib/supabase/server";
+import { Metadata } from "next";
 
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "مدیریت کارکنان",
+  description: "مدیریت لیست پرسنل کارگاه، دسترسی‌ها و تعیین نقش‌های کاربری",
+};
 
 export default async function StaffPage() {
   const supabase = await createClient();
