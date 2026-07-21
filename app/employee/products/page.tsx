@@ -8,11 +8,10 @@ export const revalidate = 0;
 export default async function ProductsPage() {
   const supabase = await createClient();
 
-  // 👈 فیلتر کردن دیتابیس: فقط محصولاتی که مربوط به فاکتور و فروش هستند (نه ورق خام انبار)
   const { data: productsData, error } = await supabase
     .from("products")
     .select("*")
-    .in("category", ["cabinet", "accessory"]) // 👈 فقط کابینت و یراق‌آلات فروشی
+    .in("category", ["cabinet", "accessory"]) 
     .order("created_at", { ascending: false });
 
   if (error) {

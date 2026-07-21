@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import Header from "@/components/dashboard/header";
-import Sidebar from "@/components/sidebar/sidebarForAdmin";
+import Header from "@/components/sidebarAndHeader/headerForEmployee";
+import Sidebar from "@/components/sidebarAndHeader/sidebarForEmployee";
 import { Metadata } from "next";
 
 
