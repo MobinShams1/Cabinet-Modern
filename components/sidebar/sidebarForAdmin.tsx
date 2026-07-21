@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@/context/userContext";
 
-import MenuLink from "./menuLinks";
+import MenuLink from "../dashboard/menuLinks";
 
 const menuItems = [
   {

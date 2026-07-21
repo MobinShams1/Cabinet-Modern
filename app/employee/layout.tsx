@@ -1,6 +1,21 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import Header from "@/components/dashboard/header";
+import Sidebar from "@/components/sidebar/sidebarForAdmin";
+import { Metadata } from "next";
 
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | سامانه Cabinet ERP",
+    default: "داشبورد مدیریت | Cabinet ERP",
+  },
+  description: "سامانه یکپارچه مدیریت کارگاه، انبارداری و تولید کابینت",
+  robots: {
+    index: false, 
+    follow: false,
+  },
+};
 export default async function EmployeeLayout({
   children,
 }: {
@@ -16,5 +31,15 @@ export default async function EmployeeLayout({
     redirect("/login");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex bg-slate-100">
+      <Sidebar />
+
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Header />
+
+        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      </div>
+    </div>
+  );
 }
