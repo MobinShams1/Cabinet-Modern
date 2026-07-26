@@ -3,6 +3,7 @@
 import { Order } from "@/types/order";
 import StatusBadge from "./statusBadge";
 import { Eye, Edit, Trash2, Package } from "lucide-react";
+import InvoiceButton from "./invoiceButton";
 
 interface OrderTableProps {
   orders: Order[];
@@ -36,6 +37,7 @@ export default function OrderTable({
               <th className="p-4 text-sm font-semibold text-slate-600">مبلغ</th>
               <th className="p-4 text-sm font-semibold text-slate-600 hidden lg:table-cell">تاریخ</th>
               <th className="p-4 text-sm font-semibold text-slate-600">وضعیت</th>
+              <th className="p-4 text-sm font-semibold text-slate-600 text-center">فاکتور</th>
               <th className="p-4 text-sm font-semibold text-slate-600 text-center">عملیات</th>
             </tr>
           </thead>
@@ -55,11 +57,26 @@ export default function OrderTable({
                 <td className="p-4 text-sm font-medium text-slate-800">{formatPrice(order.totalPrice)} تومان</td>
                 <td className="p-4 text-sm text-slate-500 hidden lg:table-cell">{order.date}</td>
                 <td className="p-4"><StatusBadge status={order.status} /></td>
+                
+                <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
+                  <InvoiceButton 
+                    order={{ 
+                      id: String(order.id),
+                      total_price: order.totalPrice,
+                      created_at: order.date,
+                      status: order.status,
+                      customer_name: order.customerName ,
+                      customer_phone: order.customerPhone
+                    }} 
+                  />
+                </td>
+
                 <td className="p-4" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center justify-center gap-2">
                     <button 
                       onClick={() => onSelectOrder(order)} 
                       className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                      title="مشاهده"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -67,6 +84,7 @@ export default function OrderTable({
                     <button 
                       onClick={() => onEditOrder(order)} 
                       className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                      title="ویرایش"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
@@ -74,6 +92,7 @@ export default function OrderTable({
                     <button 
                       onClick={() => onDeleteOrder(order.rawId)} 
                       className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                      title="حذف"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

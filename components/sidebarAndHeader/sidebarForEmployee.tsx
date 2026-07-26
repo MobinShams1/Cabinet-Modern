@@ -47,7 +47,6 @@ const menuItems = [
     icon: <BarChart3 className="w-5 h-5" />,
     href: "reports",
   },
- 
 ];
 
 export default function Sidebar() {
@@ -82,11 +81,18 @@ export default function Sidebar() {
       >
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden p-1.5 shadow-sm">
           <Image
-            src={logo} 
+            src={logo}
             alt="Cabinet ERP Logo"
             className="w-full h-full object-contain"
           />
         </div>
+
+        {isSidebarOpen && (
+          <h1 className="text-2xl font-bold mr-3 text-slate-800 whitespace-nowrap">
+            Cabinet ERP
+          </h1>
+        )}
+      </div>
 
       <nav className="px-3 space-y-1">
         {menuItems.map((item) => (
