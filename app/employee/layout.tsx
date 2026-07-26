@@ -4,15 +4,21 @@ import Header from "@/components/sidebarAndHeader/headerForEmployee";
 import Sidebar from "@/components/sidebarAndHeader/sidebarForEmployee";
 import { Metadata } from "next";
 
-
 export const metadata: Metadata = {
   title: {
     template: "%s | سامانه Cabinet ERP",
     default: "داشبورد مدیریت | Cabinet ERP",
   },
+  icons: {
+    icon: [{ url: "/icon-logo1.png" }],
+    shortcut: ["/logo.png1"],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   description: "سامانه یکپارچه مدیریت کارگاه، انبارداری و تولید کابینت",
   robots: {
-    index: false, 
+    index: false,
     follow: false,
   },
 };

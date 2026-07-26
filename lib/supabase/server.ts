@@ -19,8 +19,7 @@ export async function createClient() {
               cookieStore.set(name, value, options);
             });
           } catch {
-            // Server Components اجازه set کردن Cookie را ندارند.
-            // Middleware این کار را انجام می‌دهد.
+            
           }
         },
       },

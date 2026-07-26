@@ -13,6 +13,8 @@ import {
 import { useUser } from "@/context/userContext";
 
 import MenuLink from "../dashboard/menuLinks";
+import Image from "next/image";
+import logo from "@/public/icon-logo1.png";
 
 const menuItems = [
   {
@@ -74,17 +76,17 @@ export default function Sidebar() {
       </button>
 
       <div
-        className={`p-6 flex items-center ${isSidebarOpen ? "justify-start" : "justify-center"}`}
+        className={`p-6 flex items-center ${
+          isSidebarOpen ? "justify-start" : "justify-center"
+        }`}
       >
-        <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-bold text-lg">C</span>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden p-1.5 shadow-sm">
+          <Image
+            src={logo} 
+            alt="Cabinet ERP Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
-        {isSidebarOpen && (
-          <h1 className="text-2xl font-bold mr-3 text-slate-800 whitespace-nowrap">
-            Cabinet ERP
-          </h1>
-        )}
-      </div>
 
       <nav className="px-3 space-y-1">
         {menuItems.map((item) => (

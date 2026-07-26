@@ -4,6 +4,7 @@ import { UserProvider } from "../context/userContext";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import SessionManager from "@/components/sessionManager";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <UserProvider>{children}</UserProvider>
         <Toaster position="top-center" dir="rtl" duration={3000} closeButton richColors />
+        <SessionManager />
       </body>
     </html>
   );

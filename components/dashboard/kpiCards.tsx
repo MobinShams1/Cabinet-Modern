@@ -1,37 +1,55 @@
-export default function KpiCards() {
+interface KpiCardsProps {
+  todaysOrders: number;
+  activeCustomers: number;
+  totalRevenue: number;
+  activeProjects: number;
+}
+
+export default function KpiCards({
+  todaysOrders,
+  activeCustomers,
+  totalRevenue,
+  activeProjects,
+}: KpiCardsProps) {
+  const cards = [
+    {
+      title: "پروژه‌های فعال",
+      value: activeProjects,
+      subtext: "مورد در صف انتظار",
+      badgeColor: "text-amber-500",
+    },
+    {
+      title: "درآمد کل",
+      value: `${(totalRevenue / 1_000_000).toLocaleString("fa-IR")}M تومان`,
+      subtext: "نسبت به ماه قبل ۲۳٪ ↑",
+      badgeColor: "text-emerald-500",
+    },
+    {
+      title: "مشتریان فعال",
+      value: activeCustomers.toLocaleString("fa-IR"),
+      subtext: "نسبت به ماه قبل ۸٪ ↑",
+      badgeColor: "text-emerald-500",
+    },
+    {
+      title: "سفارشات امروز",
+      value: todaysOrders.toLocaleString("fa-IR"),
+      subtext: "نسبت به دیروز ۱۲٪ ↑",
+      badgeColor: "text-emerald-500",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h3 className="text-slate-500 text-sm">سفارشات امروز</h3>
-        <p className="text-3xl font-bold mt-2 text-slate-800">۲۴</p>
-        <span className="text-xs text-green-600 mt-1 inline-block">
-          ↑ ۱۲٪ نسبت به دیروز
-        </span>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h3 className="text-slate-500 text-sm">مشتریان فعال</h3>
-        <p className="text-3xl font-bold mt-2 text-slate-800">۱۵۶</p>
-        <span className="text-xs text-green-600 mt-1 inline-block">
-          ↑ ۸٪ نسبت به ماه قبل
-        </span>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h3 className="text-slate-500 text-sm">درآمد کل</h3>
-        <p className="text-3xl font-bold mt-2 text-slate-800">۸۵۰M</p>
-        <span className="text-xs text-green-600 mt-1 inline-block">
-          ↑ ۲۳٪ نسبت به ماه قبل
-        </span>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h3 className="text-slate-500 text-sm">پروژه‌های فعال</h3>
-        <p className="text-3xl font-bold mt-2 text-slate-800">۱۲</p>
-        <span className="text-xs text-yellow-600 mt-1 inline-block">
-          ۴ مورد در صف انتظار
-        </span>
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card, idx) => (
+        <div
+          key={idx}
+          className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2"
+        >
+          <span className="text-gray-500 text-sm font-medium">{card.title}</span>
+          <div className="text-3xl font-extrabold text-gray-800">{card.value}</div>
+          <div className={`text-xs font-medium ${card.badgeColor}`}>{card.subtext}</div>
+        </div>
+      ))}
     </div>
   );
 }
