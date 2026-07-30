@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
 interface CreateStaffInput {
@@ -13,27 +13,39 @@ interface CreateStaffInput {
 
 export async function createStaffMember(data: CreateStaffInput) {
   try {
-    const supabase = await createClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          full_name: data.fullName,
-        },
+    if (!serviceRoleKey) {
+      return {
+        success: false,
+        error: "کلید SUPABASE_SERVICE_ROLE_KEY در فایل .env.local تعریف نشده است.",
+      };
+    }
+
+    // ساخت کلاینت ادمین بدون دستکاری cookieStore
+    const supabaseAdmin = createAdminClient(supabaseUrl, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false, // جلوگیری از ذخیره یا دستکاری سشن فعلی ادمین
       },
     });
 
-    if (authError) {
-      return { success: false, error: authError.message };
-    }
+    // ۱. ساخت کاربر جدید
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      password: data.password,
+      email_confirm: true,
+      user_metadata: {
+        full_name: data.fullName,
+      },
+    });
 
-    if (!authData.user) {
-      return { success: false, error: "عملیات ساخت حساب با خطا مواجه شد." };
-    }
+    if (authError) return { success: false, error: authError.message };
+    if (!authData.user) return { success: false, error: "خطا در ایجاد کاربر." };
 
-    const { error: profileError } = await supabase.from("profiles").upsert(
+    // ۲. درج اطلاعات در پروفایل
+    const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
       {
         id: authData.user.id,
         full_name: data.fullName,
@@ -42,12 +54,10 @@ export async function createStaffMember(data: CreateStaffInput) {
         role: data.role,
         status: "active",
       },
-      { onConflict: "id" },
+      { onConflict: "id" }
     );
 
-    if (profileError) {
-      return { success: false, error: profileError.message };
-    }
+    if (profileError) return { success: false, error: profileError.message };
 
     const newStaffFormatted = {
       id: `STF-${String(authData.user.id).substring(0, 4)}`,
@@ -62,8 +72,7 @@ export async function createStaffMember(data: CreateStaffInput) {
 
     revalidatePath("/dashboard/employee");
 
-    return { success: true, newMember:newStaffFormatted };
-
+    return { success: true, newMember: newStaffFormatted };
   } catch (err: any) {
     return {
       success: false,

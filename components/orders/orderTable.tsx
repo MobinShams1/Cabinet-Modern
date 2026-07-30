@@ -13,16 +13,15 @@ interface OrderTableProps {
   onEditOrder: (order: Order) => void;
 }
 
-export default function OrderTable({ 
-  orders, 
-  selectedOrderId, 
-  onSelectOrder, 
+export default function OrderTable({
+  orders,
+  selectedOrderId,
+  onSelectOrder,
   onDeleteOrder,
-  onEditOrder 
+  onEditOrder,
 }: OrderTableProps) {
-  
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fa-IR').format(price);
+    return new Intl.NumberFormat("fa-IR").format(price);
   };
 
   return (
@@ -31,66 +30,102 @@ export default function OrderTable({
         <table className="w-full">
           <thead>
             <tr className="text-right border-b border-slate-100 bg-slate-50">
-              <th className="p-4 text-sm font-semibold text-slate-600">شماره سفارش</th>
-              <th className="p-4 text-sm font-semibold text-slate-600">مشتری</th>
-              <th className="p-4 text-sm font-semibold text-slate-600 hidden md:table-cell">شماره تماس</th>
+              <th className="p-4 text-sm font-semibold text-slate-600">
+                شماره سفارش
+              </th>
+              <th className="p-4 text-sm font-semibold text-slate-600">
+                مشتری
+              </th>
+              <th className="p-4 text-sm font-semibold text-slate-600 hidden md:table-cell">
+                شماره تماس
+              </th>
               <th className="p-4 text-sm font-semibold text-slate-600">مبلغ</th>
-              <th className="p-4 text-sm font-semibold text-slate-600 hidden lg:table-cell">تاریخ</th>
-              <th className="p-4 text-sm font-semibold text-slate-600">وضعیت</th>
-              <th className="p-4 text-sm font-semibold text-slate-600 text-center">فاکتور</th>
-              <th className="p-4 text-sm font-semibold text-slate-600 text-center">عملیات</th>
+              <th className="p-4 text-sm font-semibold text-slate-600 hidden lg:table-cell">
+                تاریخ
+              </th>
+              <th className="p-4 text-sm font-semibold text-slate-600">
+                وضعیت
+              </th>
+              <th className="p-4 text-sm font-semibold text-slate-600 text-center">
+                فاکتور
+              </th>
+              <th className="p-4 text-sm font-semibold text-slate-600 text-center">
+                عملیات
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {orders.map((order) => (
-              <tr 
+              <tr
                 key={order.id}
                 onClick={() => onSelectOrder(order)}
                 className={`border-b border-slate-100 hover:bg-slate-50 transition cursor-pointer ${
-                  selectedOrderId === order.id ? 'bg-indigo-50/60' : ''
+                  selectedOrderId === order.id ? "bg-indigo-50/60" : ""
                 }`}
               >
-                <td className="p-4 text-sm font-medium text-indigo-600">{order.id}</td>
-                <td className="p-4 text-sm text-slate-800">{order.customerName}</td>
-                <td className="p-4 text-sm text-slate-600 hidden md:table-cell">{order.customerPhone}</td>
-                <td className="p-4 text-sm font-medium text-slate-800">{formatPrice(order.totalPrice)} تومان</td>
-                <td className="p-4 text-sm text-slate-500 hidden lg:table-cell">{order.date}</td>
-                <td className="p-4"><StatusBadge status={order.status} /></td>
-                
-                <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
-                  <InvoiceButton 
-                    order={{ 
+                <td className="p-4 text-sm font-medium text-indigo-600">
+                  {order.id}
+                </td>
+                <td className="p-4 text-sm text-slate-800">
+                  {order.customerName}
+                </td>
+                <td className="p-4 text-sm text-slate-600 hidden md:table-cell">
+                  {order.customerPhone}
+                </td>
+                <td className="p-4 text-sm font-medium text-slate-800">
+                  {formatPrice(order.totalPrice)} تومان
+                </td>
+                <td className="p-4 text-sm text-slate-500 hidden lg:table-cell">
+                  {order.date}
+                </td>
+                <td className="p-4">
+                  <StatusBadge status={order.status} />
+                </td>
+
+                <td
+                  className="p-4 text-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <InvoiceButton
+                    order={{
                       id: String(order.id),
                       total_price: order.totalPrice,
                       created_at: order.date,
                       status: order.status,
-                      customer_name: order.customerName ,
-                      customer_phone: order.customerPhone
-                    }} 
+                      customer_name: order.customerName,
+                      customer_phone: order.customerPhone,
+                      cabinet_type: (order as any).cabinetType,
+                      material_type: (order as any).materialType,
+                      items: order.items?.map((i) => ({
+                        name: i.name,
+                        quantity: i.quantity,
+                        unitPrice: i.price,
+                      })),
+                    }}
                   />
                 </td>
 
                 <td className="p-4" onClick={(e) => e.stopPropagation()}>
                   <div className="flex items-center justify-center gap-2">
-                    <button 
-                      onClick={() => onSelectOrder(order)} 
+                    <button
+                      onClick={() => onSelectOrder(order)}
                       className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
                       title="مشاهده"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    
-                    <button 
-                      onClick={() => onEditOrder(order)} 
+
+                    <button
+                      onClick={() => onEditOrder(order)}
                       className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                       title="ویرایش"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
-                    
-                    <button 
-                      onClick={() => onDeleteOrder(order.rawId)} 
+
+                    <button
+                      onClick={() => onDeleteOrder(order.rawId)}
                       className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                       title="حذف"
                     >

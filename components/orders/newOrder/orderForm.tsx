@@ -7,6 +7,7 @@ import FormTechnicalSection from "./formTechnicalSection";
 import FormItemsSection, { FormItem } from "./formItemsSection";
 import { createNewOrder, updateOrder } from "@/actions/ordersAction"; 
 import { Order } from "@/types/order";
+import { toast } from "sonner";
 
 interface OrderFormProps {
   onClose: () => void;
@@ -114,7 +115,7 @@ export default function OrderForm({
         if (onSubmitSuccess) onSubmitSuccess();
         onClose();
       } else {
-        alert(`متاسفانه خطایی در ویرایش رخ داد: ${result.error || "خطای ناشناخته"}`);
+        toast(`متاسفانه خطایی در ویرایش رخ داد: ${result.error || "خطای ناشناخته"}`);
       }
     } else {
       const orderPayload = {
@@ -134,8 +135,8 @@ export default function OrderForm({
       if (result.success) {
         if (onOrderAdded) {
           onOrderAdded({
-            id: `ORD-${result.orderId}`,
-            rawId: result.orderId,
+            id: `ORD-${(result as any).orderId}`,
+            rawId: (result as any).orderId,
             customerName,
             customerPhone,
             customerAddress,
@@ -167,7 +168,7 @@ export default function OrderForm({
           <label className="block text-xs font-semibold text-amber-800 mb-1">تغییر وضعیت سفارش کابینت</label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as "pending" | "completed" | "in-progress" | "designing")}
             className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-indigo-500/20"
           >
             <option value="pending">در انتظار تایید</option>

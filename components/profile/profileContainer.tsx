@@ -11,7 +11,7 @@ import SecurityForm from "./securityForm";
 export default function ProfileContainer() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  
+
   const [userForm, setUserForm] = useState({
     fullName: "",
     email: "",
@@ -26,7 +26,10 @@ export default function ProfileContainer() {
   useEffect(() => {
     async function fetchUserProfile() {
       try {
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
         if (authError) throw authError;
         if (!user) return;
 
@@ -43,7 +46,6 @@ export default function ProfileContainer() {
           email: user.email || "",
           role: profile?.role || "employee",
         });
-
       } catch (error: any) {
         console.error("Fetch profile error:", error);
         toast.error("خطا در بارگذاری اطلاعات پروفایل");
@@ -67,7 +69,9 @@ export default function ProfileContainer() {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { error } = await supabase
@@ -99,7 +103,7 @@ export default function ProfileContainer() {
     try {
       setLoading(true);
       const { error } = await supabase.auth.updateUser({
-        password: securityForm.newPassword
+        password: securityForm.newPassword,
       });
 
       if (error) throw error;
@@ -114,8 +118,11 @@ export default function ProfileContainer() {
 
   if (fetching) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-500 text-lg">در حال بارگذاری پروفایل...</p>
+        </div>
       </div>
     );
   }
@@ -124,29 +131,38 @@ export default function ProfileContainer() {
     <div className="h-full bg-slate-50/50 p-6 space-y-6 max-w-4xl mx-auto">
       <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
         <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-          {userForm.fullName ? userForm.fullName[0] : <User className="w-5 h-5" />}
+          {userForm.fullName ? (
+            userForm.fullName[0]
+          ) : (
+            <User className="w-5 h-5" />
+          )}
         </div>
         <div>
-          <h1 className="text-lg font-bold text-slate-800">پروفایل کاربری من</h1>
+          <h1 className="text-lg font-bold text-slate-800">
+            پروفایل کاربری من
+          </h1>
           <div className="flex items-center gap-1 mt-0.5 text-slate-500 text-xs">
             <BadgeCheck className="w-3.5 h-3.5 text-indigo-500" />
-            <span>نقش دسترسی: {userForm.role === "admin" ? "مدیر سیستم" : "کارکنان کارگاه"}</span>
+            <span>
+              نقش دسترسی:{" "}
+              {userForm.role === "admin" ? "مدیر سیستم" : "کارکنان کارگاه"}
+            </span>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <PersonalInfoForm 
-          formData={userForm} 
-          loading={loading} 
-          onChange={handleUserChange} 
-          onSubmit={handleUpdateInfo} 
+        <PersonalInfoForm
+          formData={userForm}
+          loading={loading}
+          onChange={handleUserChange}
+          onSubmit={handleUpdateInfo}
         />
-        <SecurityForm 
-          formData={securityForm} 
-          loading={loading} 
-          onChange={handleSecurityChange} 
-          onSubmit={handleChangePassword} 
+        <SecurityForm
+          formData={securityForm}
+          loading={loading}
+          onChange={handleSecurityChange}
+          onSubmit={handleChangePassword}
         />
       </div>
     </div>

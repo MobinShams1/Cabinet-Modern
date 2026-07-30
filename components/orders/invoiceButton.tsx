@@ -1,4 +1,3 @@
-// components/orders/invoiceButton.tsx
 "use client";
 
 import { Download } from "lucide-react";
@@ -18,9 +17,11 @@ interface InvoiceProps {
     status: string;
     customer_name?: string;
     customer_phone?: string;
-    items?: OrderItem[]; 
-    discount?: number;   
-    tax?: number;        
+    cabinet_type?: string;  
+    material_type?: string; 
+    items?: OrderItem[];
+    discount?: number;
+    tax?: number;
   };
 }
 
@@ -38,10 +39,14 @@ export default function InvoiceButton({ order }: InvoiceProps) {
         return;
       }
 
+      const cabinetType = order.cabinet_type || "سفارشی";
+      const materialType = order.material_type || "استاندارد";
+      const defaultDescription = `ساخت و اجرای کابینت ${cabinetType} (جنس: ${materialType})`;
+
       const itemsList = order.items && order.items.length > 0 
         ? order.items 
         : [
-            { name: "ساخت و نصب کابینت (سفارشی)", quantity: 1, unitPrice: order.total_price }
+            { name: defaultDescription, quantity: 1, unitPrice: order.total_price }
           ];
 
       const discountAmount = order.discount || 0;
@@ -100,21 +105,23 @@ export default function InvoiceButton({ order }: InvoiceProps) {
               line-height: 1.6;
             }
             .info-grid {
-              display: table;
               width: 100%;
               background-color: #f8fafc;
-              border: 1px solid #f1f5f9;
+              border: 1px solid #e2e8f0;
               border-radius: 8px;
               padding: 12px 16px;
               margin-bottom: 24px;
               box-sizing: border-box;
             }
             .info-row {
-              display: table-row;
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 6px;
+            }
+            .info-row:last-child {
+              margin-bottom: 0;
             }
             .info-cell {
-              display: table-cell;
-              padding: 4px 8px;
               color: #334155;
             }
             table.items-table {
@@ -142,7 +149,7 @@ export default function InvoiceButton({ order }: InvoiceProps) {
               justify-content: flex-end;
             }
             .summary-table {
-              width: 300px;
+              width: 320px;
               border-collapse: collapse;
               margin-right: auto;
             }
@@ -192,7 +199,11 @@ export default function InvoiceButton({ order }: InvoiceProps) {
             <div class="info-grid">
               <div class="info-row">
                 <div class="info-cell"><strong>خریدار:</strong> ${order.customer_name || "مشتری عمومی"}</div>
-                <div class="info-cell"><strong>شماره تماس:</strong> ${order.customer_phone || "ثبت نشده"}</div>
+                <div class="info-cell"><strong>شماره تماس:</strong> ${order.customer_phone || (order as any).customerPhone || "ثبت نشده"}</div>
+              </div>
+              <div class="info-row" style="margin-top: 8px; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+                <div class="info-cell"><strong>نوع کابینت:</strong> ${cabinetType}</div>
+                <div class="info-cell"><strong>جنس / متریال:</strong> ${materialType}</div>
               </div>
             </div>
 
@@ -201,7 +212,7 @@ export default function InvoiceButton({ order }: InvoiceProps) {
                 <tr>
                   <th style="width: 50px;">ردیف</th>
                   <th style="text-align: right;">شرح کالا / خدمات</th>
-                  <th style="width: 80px;">تعداد/مقدار</th>
+                  <th style="width: 80px;">تعداد</th>
                   <th style="width: 140px;">قیمت واحد (تومان)</th>
                   <th style="width: 150px;">قیمت کل (تومان)</th>
                 </tr>
@@ -232,7 +243,7 @@ export default function InvoiceButton({ order }: InvoiceProps) {
                 </tr>` : ""}
                 ${taxAmount > 0 ? `
                 <tr>
-                  <td style="text-align: right; color: #64748b;">مالیات/ارزش‌افزوده:</td>
+                  <td style="text-align: right; color: #64748b;">مالیات / ارزش‌افزوده:</td>
                   <td style="text-align: left;">${taxAmount.toLocaleString("fa-IR")} تومان</td>
                 </tr>` : ""}
                 <tr class="total-row">
@@ -277,7 +288,7 @@ export default function InvoiceButton({ order }: InvoiceProps) {
       onClick={handleDownload}
       disabled={loading}
       className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors inline-flex items-center gap-1 text-xs"
-      title="دانلود فاکتور جزئی"
+      title="دانلود فاکتور"
     >
       <Download className="w-4 h-4" />
       {loading ? "در حال آماده‌سازی..." : "فاکتور"}

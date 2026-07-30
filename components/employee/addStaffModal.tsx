@@ -1,25 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { X, UserPlus, Loader2, Eye, EyeOff } from "lucide-react"; 
+import { X, UserPlus, Loader2, Eye, EyeOff } from "lucide-react";
 import { createStaffMember } from "@/actions/employeeAction";
 import { toast } from "sonner";
 
 interface AddStaffModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onStaffAdded: (newMember :any) => void;
+  onStaffAdded: (newMember: any) => void;
 }
 
-export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
+export default function AddStaffModal({ isOpen, onClose,onStaffAdded }: AddStaffModalProps) {
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     role: "employee" as "admin" | "employee",
-    password: "", 
+    password: "",
   });
 
   if (!isOpen) return null;
@@ -41,8 +41,16 @@ export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
       const res = await createStaffMember(formData);
 
       if (res.success && res.newMember) {
-        toast.success(`همکار جدید (${formData.fullName}) با موفقیت به سیستم اضافه شد.`);
-        setFormData({ fullName: "", email: "", phone: "", role: "employee", password: "" });
+        toast.success(
+          `همکار جدید (${formData.fullName}) با موفقیت به سیستم اضافه شد.`,
+        );
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          role: "employee",
+          password: "",
+        });
         onStaffAdded(res.newMember);
         onClose();
       } else {
@@ -58,52 +66,65 @@ export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
   return (
     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden flex flex-col">
-        
-        {/* هدر مودال */}
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
             <UserPlus className="w-4 h-4 text-indigo-600" />
             افزودن عضو جدید به کارگاه
           </h3>
-          <button onClick={onClose} className="p-1 hover:bg-slate-200 rounded-lg transition text-slate-400">
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-slate-200 rounded-lg transition text-slate-400"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">نام و نام خانوادگی *</label>
+            <label className="text-xs font-semibold text-slate-500">
+              نام و نام خانوادگی *
+            </label>
             <input
               type="text"
               required
               placeholder="مثال: علیرضا کاظمی"
               value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, fullName: e.target.value })
+              }
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">نشانی ایمیل (نام کاربری ورود) *</label>
+            <label className="text-xs font-semibold text-slate-500">
+              نشانی ایمیل (نام کاربری ورود) *
+            </label>
             <input
               type="email"
               required
               placeholder="example@gmail.com"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">کلمه عبور ورود به پنل *</label>
+            <label className="text-xs font-semibold text-slate-500">
+              کلمه عبور ورود به پنل *
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="حداقل ۶ کاراکتر"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-3 pl-10 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono"
               />
               <button
@@ -111,27 +132,39 @@ export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">شماره تماس</label>
+            <label className="text-xs font-semibold text-slate-500">
+              شماره تماس
+            </label>
             <input
               type="text"
               placeholder="۰۹۱۲۳۴۵۶۷۸۹"
               value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition font-mono"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">سطح دسترسی و نقش</label>
+            <label className="text-xs font-semibold text-slate-500">
+              سطح دسترسی و نقش
+            </label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value as any })
+              }
               className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700"
             >
               <option value="employee">🛠️ کارکنان کارگاه (Employee)</option>
@@ -164,7 +197,6 @@ export default function AddStaffModal({ isOpen, onClose }: AddStaffModalProps) {
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );

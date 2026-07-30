@@ -79,7 +79,10 @@ export default function Sidebar() {
       }`}
     >
       <button
-        onClick={toggleSidebar}
+        onClick={(e) => {
+          e.stopPropagation(); // جلوگیری از تداخل رویداد کلیک دکمه با دایو هدر
+          toggleSidebar();
+        }}
         className="absolute -right-3 top-6 bg-white border border-slate-200 rounded-full p-1.5 shadow-md hover:bg-slate-50 transition z-10"
       >
         {isSidebarOpen ? (
@@ -90,13 +93,15 @@ export default function Sidebar() {
       </button>
 
       <div
-        className={`p-6 flex items-center ${
+        onClick={toggleSidebar}
+        className={`p-6 flex items-center cursor-pointer select-none transition-opacity hover:opacity-80 ${
           isSidebarOpen ? "justify-start" : "justify-center"
         }`}
+        title={isSidebarOpen ? "بستن سایدبار" : "باز کردن سایدبار"}
       >
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden p-1.5 shadow-sm">
           <Image
-            src={logo} 
+            src={logo}
             alt="Cabinet ERP Logo"
             className="w-full h-full object-contain"
           />

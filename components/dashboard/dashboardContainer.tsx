@@ -32,7 +32,7 @@ export default async function DashboardContainer() {
 
     supabase
       .from("orders")
-      .select("id, customers (full_name), total_price, status, created_at")
+      .select("id, created_at, total_price, status ,customers!inner(full_name)")
       .order("created_at", { ascending: false })
       .limit(5),
 
@@ -63,6 +63,13 @@ export default async function DashboardContainer() {
   const chartData = Object.keys(monthlySalesMap).map((month) => ({
     month,
     sales: monthlySalesMap[month],
+  }));
+
+  const formattedRecentOrders = recentOrders?.map((order) => ({
+    ...order,
+    customers: Array.isArray(order.customers)
+      ? order.customers[0]
+      : order.customers,
   }));
 
   const totalOrders = allOrdersForStatus?.length || 0;
@@ -125,7 +132,7 @@ export default async function DashboardContainer() {
         </div>
       </div>
 
-      <RecentOrdersTable orders={recentOrders || []} />
+      <RecentOrdersTable orders={(formattedRecentOrders as any) || []} />
     </div>
   );
 }

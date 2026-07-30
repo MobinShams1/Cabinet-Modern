@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     follow: false,
   },
 };
+
 export default async function EmployeeLayout({
   children,
 }: {
@@ -37,13 +38,25 @@ export default async function EmployeeLayout({
     redirect("/login");
   }
 
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (error || !profile) {
+    redirect("/login");
+  }
+
+  if (profile.role !== "employee") {
+    redirect("/admin/dashboard");
+  }
+
   return (
     <div className="min-h-screen flex bg-slate-100">
       <Sidebar />
-
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header />
-
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
       </div>
     </div>
