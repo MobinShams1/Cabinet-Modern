@@ -32,7 +32,7 @@ export default async function DashboardContainer() {
 
     supabase
       .from("orders")
-      .select("id, created_at, total_price, status ,customers!inner(full_name)")
+      .select("id, created_at, total_price, status, customers!inner(full_name)")
       .order("created_at", { ascending: false })
       .limit(5),
 
@@ -115,7 +115,7 @@ export default async function DashboardContainer() {
       : [];
 
   return (
-    <div className="p-6 space-y-6 dir-rtl bg-slate-50/50 min-h-screen">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 dir-rtl bg-slate-50/50 min-h-screen">
       <KpiCards
         todaysOrders={todaysOrdersCount || 0}
         activeCustomers={totalOrders}
@@ -123,7 +123,7 @@ export default async function DashboardContainer() {
         activeProjects={activeOrdersCount || 0}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2">
           <SalesChart data={chartData} />
         </div>

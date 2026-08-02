@@ -11,7 +11,7 @@ interface AddStaffModalProps {
   onStaffAdded: (newMember: any) => void;
 }
 
-export default function AddStaffModal({ isOpen, onClose,onStaffAdded }: AddStaffModalProps) {
+export default function AddStaffModal({ isOpen, onClose, onStaffAdded }: AddStaffModalProps) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -64,139 +64,144 @@ export default function AddStaffModal({ isOpen, onClose,onStaffAdded }: AddStaff
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden flex flex-col">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 dir-rtl">
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md max-h-[88vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+        
+        {/* هدر مدال */}
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0">
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
             <UserPlus className="w-4 h-4 text-indigo-600" />
             افزودن عضو جدید به کارگاه
           </h3>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-200 rounded-lg transition text-slate-400"
+            className="p-1 hover:bg-slate-200 rounded-lg transition text-slate-400 hover:text-slate-600"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">
-              نام و نام خانوادگی *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="مثال: علیرضا کاظمی"
-              value={formData.fullName}
-              onChange={(e) =>
-                setFormData({ ...formData, fullName: e.target.value })
-              }
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">
-              نشانی ایمیل (نام کاربری ورود) *
-            </label>
-            <input
-              type="email"
-              required
-              placeholder="example@gmail.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">
-              کلمه عبور ورود به پنل *
-            </label>
-            <div className="relative">
+        {/* بدنه قابل اسکرول */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 block">
+                نام و نام خانوادگی *
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
+                type="text"
                 required
-                placeholder="حداقل ۶ کاراکتر"
-                value={formData.password}
+                placeholder="مثال: علیرضا کاظمی"
+                value={formData.fullName}
                 onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
+                  setFormData({ ...formData, fullName: e.target.value })
                 }
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-3 pl-10 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition"
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 block">
+                نشانی ایمیل (نام کاربری ورود) *
+              </label>
+              <input
+                type="email"
+                required
+                placeholder="example@gmail.com"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono dir-ltr"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 block">
+                کلمه عبور ورود به پنل *
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="حداقل ۶ کاراکتر"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-3 pl-10 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-left font-mono dir-ltr"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 block">
+                شماره تماس
+              </label>
+              <input
+                type="tel"
+                placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition font-mono text-left dir-ltr"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 block">
+                سطح دسترسی و نقش
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) =>
+                  setFormData({ ...formData, role: e.target.value as any })
+                }
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700 cursor-pointer"
+              >
+                <option value="employee">🛠️ کارکنان کارگاه (Employee)</option>
+                <option value="admin">👑 مدیر سیستم (Admin)</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 mt-4 sticky bottom-0 bg-white py-2">
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                onClick={onClose}
+                disabled={loading}
+                className="px-4 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-semibold transition"
               >
-                {showPassword ? (
-                  <EyeOff className="w-4 h-4" />
+                انصراف
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition disabled:opacity-50 shadow-sm"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    در حال ثبت...
+                  </>
                 ) : (
-                  <Eye className="w-4 h-4" />
+                  "ثبت و فعال‌سازی دسترسی"
                 )}
               </button>
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">
-              شماره تماس
-            </label>
-            <input
-              type="text"
-              placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData({ ...formData, phone: e.target.value })
-              }
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition font-mono"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-500">
-              سطح دسترسی و نقش
-            </label>
-            <select
-              value={formData.role}
-              onChange={(e) =>
-                setFormData({ ...formData, role: e.target.value as any })
-              }
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700"
-            >
-              <option value="employee">🛠️ کارکنان کارگاه (Employee)</option>
-              <option value="admin">👑 مدیر سیستم (Admin)</option>
-            </select>
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 mt-5">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={loading}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-medium transition"
-            >
-              انصراف
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium transition disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  در حال ایجاد حساب...
-                </>
-              ) : (
-                "ثبت و فعال‌سازی دسترسی"
-              )}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

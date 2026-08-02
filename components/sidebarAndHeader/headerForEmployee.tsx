@@ -7,10 +7,15 @@ import {
   ChevronDown, 
   LogOut, 
   User,
+  Menu,
 } from "lucide-react";
 import { logout } from "@/services/auth.service";
 
-export default function Header() {
+interface HeaderProps {
+  onOpenMobileMenu?: () => void;
+}
+
+export default function Header({ onOpenMobileMenu }: HeaderProps) {
   const { user, loading, refreshUser } = useUser();
   const router = useRouter();
   const pathname = usePathname(); 
@@ -23,16 +28,13 @@ export default function Header() {
     if (pathname.includes("/employee/inventory")) return "کنترل و موجودی انبار";
     if (pathname.includes("/employee/orders")) return "سفارشات و پروژه‌های کابینت";
     if (pathname.includes("/employee/profile")) return "پروفایل کاربری";
-    if(pathname.includes("/employee/reports")) return "گزارشات";
- 
-    
-    
+    if (pathname.includes("/employee/reports")) return "گزارشات";
+    return "پنل کارکنان";
   };
 
   const handleLogOut = async () => {
     try {
       setIsLoggingOut(true);
-      
       const { error } = await logout();
       
       if (error) {
@@ -41,12 +43,9 @@ export default function Header() {
       }
 
       setIsDropdownOpen(false);
-      
       await refreshUser?.();
-      
       router.push("/login");
       router.refresh(); 
-      
     } catch (error) {
       console.error("Unexpected error during logout:", error);
     } finally {
@@ -57,17 +56,28 @@ export default function Header() {
   const getRoleLabel = (role: string) => {
     const roles: Record<string, string> = {
       admin: "مدیر سیستم",
-      employee: "کارمند",
+      employee: "کارکنان کارگاه",
       user: "کاربر",
     };
     return roles[role] || role;
   };
 
   return (
-    <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between">
-      <h2 className="text-xl font-bold text-slate-800 transition-all duration-200">
-        {getPageTitle()}
-      </h2>
+    <header className="h-20 bg-white border-b border-slate-200 px-4 md:px-8 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {/* دکمه همبرگری مخصوص موبایل */}
+        <button
+          onClick={onOpenMobileMenu}
+          className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition"
+          aria-label="باز کردن منو"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
+        <h2 className="text-base md:text-xl font-bold text-slate-800 transition-all duration-200">
+          {getPageTitle()}
+        </h2>
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="relative">
@@ -96,7 +106,7 @@ export default function Header() {
                     {user?.full_name || "کاربر"}
                   </p>
                   <p className="text-xs text-slate-500">
-                    {getRoleLabel(user?.role || "user")}
+                    {getRoleLabel(user?.role || "employee")}
                   </p>
                 </div>
                 <ChevronDown className="w-4 h-4 text-slate-400 hidden md:block" />
@@ -112,7 +122,7 @@ export default function Header() {
                 </p>
                 <p className="text-xs text-slate-500">{user?.email}</p>
                 <p className="text-xs text-indigo-600 mt-1">
-                  {getRoleLabel(user?.role || "user")}
+                  {getRoleLabel(user?.role || "employee")}
                 </p>
               </div>
 

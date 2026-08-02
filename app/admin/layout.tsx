@@ -1,9 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-import Sidebar from "@/components/sidebarAndHeader/sidebarForAdmin";
-import Header from "@/components/sidebarAndHeader/headerForAdmin";
 import { Metadata } from "next";
+import AdminLayoutClient from "@/components/lauout/adminLayoutClient";
 
 export const metadata: Metadata = {
   title: {
@@ -11,9 +9,7 @@ export const metadata: Metadata = {
     default: "داشبورد مدیریت | Cabinet ERP",
   },
   icons: {
-    icon: [
-      {url: "/icon-logo1.png"}
-    ],
+    icon: [{ url: "/icon-logo1.png" }],
     shortcut: ["/logo.png"],
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
@@ -21,11 +17,10 @@ export const metadata: Metadata = {
   },
   description: "سامانه یکپارچه مدیریت کارگاه، انبارداری و تولید کابینت",
   robots: {
-    index: false, 
+    index: false,
     follow: false,
   },
 };
-
 
 export default async function AdminLayout({
   children,
@@ -56,18 +51,5 @@ export default async function AdminLayout({
     redirect("/employee/dashboard");
   }
 
-  return (
-    <div className="min-h-screen flex bg-slate-100">
-      <Sidebar />
-
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header />
-
-        <main className="flex-1 overflow-y-auto p-8">
-          {children}
-          
-        </main>
-      </div>
-    </div>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }

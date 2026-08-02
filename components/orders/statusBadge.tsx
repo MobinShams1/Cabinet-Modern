@@ -1,4 +1,3 @@
-// app/dashboard/orders/_components/StatusBadge.tsx
 "use client";
 
 import { Order } from "@/types/order";
@@ -37,12 +36,12 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     },
   };
 
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.pending;
   const Icon = config.icon;
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${config.className}`}
+      className={`inline-flex items-center gap-1 md:gap-1.5 px-2.5 py-0.5 md:px-3 md:py-1 rounded-full text-[11px] md:text-xs font-medium whitespace-nowrap ${config.className}`}
     >
       <Icon className="w-3 h-3" />
       {config.label}

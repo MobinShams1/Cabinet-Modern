@@ -25,66 +25,66 @@ export default function OrderTable({
   };
 
   return (
-    <div className="overflow-x-auto p-4">
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+    <div className="overflow-x-auto p-2 md:p-4">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden min-w-[650px] md:min-w-full">
         <table className="w-full">
           <thead>
             <tr className="text-right border-b border-slate-100 bg-slate-50">
-              <th className="p-4 text-sm font-semibold text-slate-600">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600">
                 شماره سفارش
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600">
                 مشتری
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600 hidden md:table-cell">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600 hidden md:table-cell">
                 شماره تماس
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600">مبلغ</th>
-              <th className="p-4 text-sm font-semibold text-slate-600 hidden lg:table-cell">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600">مبلغ</th>
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600 hidden lg:table-cell">
                 تاریخ
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600">
                 وضعیت
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600 text-center">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600 text-center">
                 فاکتور
               </th>
-              <th className="p-4 text-sm font-semibold text-slate-600 text-center">
+              <th className="p-3 md:p-4 text-xs md:text-sm font-semibold text-slate-600 text-center">
                 عملیات
               </th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="divide-y divide-slate-100 text-xs md:text-sm">
             {orders.map((order) => (
               <tr
                 key={order.id}
                 onClick={() => onSelectOrder(order)}
-                className={`border-b border-slate-100 hover:bg-slate-50 transition cursor-pointer ${
+                className={`hover:bg-slate-50 transition cursor-pointer ${
                   selectedOrderId === order.id ? "bg-indigo-50/60" : ""
                 }`}
               >
-                <td className="p-4 text-sm font-medium text-indigo-600">
-                  {order.id}
+                <td className="p-3 md:p-4 font-medium text-indigo-600 whitespace-nowrap">
+                  #{order.id}
                 </td>
-                <td className="p-4 text-sm text-slate-800">
+                <td className="p-3 md:p-4 text-slate-800 whitespace-nowrap">
                   {order.customerName}
                 </td>
-                <td className="p-4 text-sm text-slate-600 hidden md:table-cell">
+                <td className="p-3 md:p-4 text-slate-600 hidden md:table-cell whitespace-nowrap">
                   {order.customerPhone}
                 </td>
-                <td className="p-4 text-sm font-medium text-slate-800">
+                <td className="p-3 md:p-4 font-medium text-slate-800 whitespace-nowrap">
                   {formatPrice(order.totalPrice)} تومان
                 </td>
-                <td className="p-4 text-sm text-slate-500 hidden lg:table-cell">
+                <td className="p-3 md:p-4 text-slate-500 hidden lg:table-cell whitespace-nowrap">
                   {order.date}
                 </td>
-                <td className="p-4">
+                <td className="p-3 md:p-4 whitespace-nowrap">
                   <StatusBadge status={order.status} />
                 </td>
 
                 <td
-                  className="p-4 text-center"
+                  className="p-3 md:p-4 text-center whitespace-nowrap"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <InvoiceButton
@@ -106,8 +106,8 @@ export default function OrderTable({
                   />
                 </td>
 
-                <td className="p-4" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex items-center justify-center gap-2">
+                <td className="p-3 md:p-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-center gap-1 md:gap-2">
                     <button
                       onClick={() => onSelectOrder(order)}
                       className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
@@ -141,7 +141,7 @@ export default function OrderTable({
         {orders.length === 0 && (
           <div className="p-8 text-center text-slate-500">
             <Package className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-            <p>هیچ سفارشی یافت نشد</p>
+            <p className="text-sm">هیچ سفارشی یافت نشد</p>
           </div>
         )}
       </div>

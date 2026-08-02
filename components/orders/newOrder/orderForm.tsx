@@ -45,8 +45,6 @@ export default function OrderForm({
     return [{ name: "کابینت آشپزخانه", quantity: 1, price: 0 }];
   });
 
-
-
   useEffect(() => {
     if (editOrderData) {
       setCustomerName(editOrderData.customerName || "");
@@ -110,12 +108,10 @@ export default function OrderForm({
             })),
           });
         }
-
-
         if (onSubmitSuccess) onSubmitSuccess();
         onClose();
       } else {
-        toast(`متاسفانه خطایی در ویرایش رخ داد: ${result.error || "خطای ناشناخته"}`);
+        toast.error(`متاسفانه خطایی در ویرایش رخ داد: ${result.error || "خطای ناشناخته"}`);
       }
     } else {
       const orderPayload = {
@@ -156,20 +152,22 @@ export default function OrderForm({
         if (onSubmitSuccess) onSubmitSuccess();
         onClose();
       } else {
-        alert(`متاسفانه خطایی در ثبت رخ داد: ${result.error || "خطای ناشناخته"}`);
+        toast.error(`متاسفانه خطایی در ثبت رخ داد: ${result.error || "خطای ناشناخته"}`);
       }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-h-[80vh] overflow-y-auto p-1">
+    <form onSubmit={handleSubmit} className="space-y-5 max-h-[78vh] sm:max-h-[80vh] overflow-y-auto p-1 pl-2">
       {isEditMode && (
-        <div className="bg-amber-50/60 p-4 rounded-xl border border-amber-200">
-          <label className="block text-xs font-semibold text-amber-800 mb-1">تغییر وضعیت سفارش کابینت</label>
+        <div className="bg-amber-50/80 p-3.5 sm:p-4 rounded-xl border border-amber-200">
+          <label className="block text-xs font-bold text-amber-900 mb-1.5">
+            تغییر وضعیت سفارش کابینت
+          </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as "pending" | "completed" | "in-progress" | "designing")}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full border border-amber-300 rounded-lg px-3 py-2 text-sm bg-white outline-none focus:ring-2 focus:ring-amber-500/20"
           >
             <option value="pending">در انتظار تایید</option>
             <option value="designing">در حال طراحی</option>
@@ -180,19 +178,62 @@ export default function OrderForm({
         </div>
       )}
 
-      <FormCustomerSection customerName={customerName} setCustomerName={setCustomerName} customerPhone={customerPhone} setCustomerPhone={setCustomerPhone} customerAddress={customerAddress} setCustomerAddress={setCustomerAddress} />
-      <FormTechnicalSection cabinetType={cabinetType} setCabinetType={setCabinetType} materialType={materialType} setMaterialType={setMaterialType} />
-      <FormItemsSection items={items} onAddItem={handleAddItem} onRemoveItem={handleRemoveItem} onItemChange={handleItemChange} />
+      <FormCustomerSection
+        customerName={customerName}
+        setCustomerName={setCustomerName}
+        customerPhone={customerPhone}
+        setCustomerPhone={setCustomerPhone}
+        customerAddress={customerAddress}
+        setCustomerAddress={setCustomerAddress}
+      />
 
-      <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-right">
-          <span className="text-xs text-slate-500">مبلغ کل فاکتور: </span>
-          <span className="text-lg font-bold text-slate-800">{new Intl.NumberFormat("fa-IR").format(calculateTotal())} تومان</span>
+      <FormTechnicalSection
+        cabinetType={cabinetType}
+        setCabinetType={setCabinetType}
+        materialType={materialType}
+        setMaterialType={setMaterialType}
+      />
+
+      <FormItemsSection
+        items={items}
+        onAddItem={handleAddItem}
+        onRemoveItem={handleRemoveItem}
+        onItemChange={handleItemChange}
+      />
+
+      <div className="border-t border-slate-200 pt-4 mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sticky bottom-0 bg-white/95 backdrop-blur-sm py-2">
+        <div className="flex items-center justify-between sm:justify-start gap-2 bg-slate-100 sm:bg-transparent p-3 sm:p-0 rounded-lg">
+          <span className="text-xs font-medium text-slate-500">مبلغ کل فاکتور:</span>
+          <span className="text-base sm:text-lg font-black text-slate-800">
+            {new Intl.NumberFormat("fa-IR").format(calculateTotal())} <span className="text-xs font-normal text-slate-500">تومان</span>
+          </span>
         </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button type="button" disabled={isSubmitting} onClick={onClose} className="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium transition disabled:opacity-50">انصراف</button>
-          <button type="submit" disabled={isSubmitting} className="flex items-center gap-1.5 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition shadow-sm shadow-indigo-200 disabled:opacity-70">
-            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> در حال ذخیره‌سازی...</> : <><Save className="w-4 h-4" /> {isEditMode ? "بروزرسانی سفارش" : "ثبت سفارش"}</>}
+
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <button
+            type="button"
+            disabled={isSubmitting}
+            onClick={onClose}
+            className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-semibold transition disabled:opacity-50 text-center"
+          >
+            انصراف
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition shadow-sm shadow-indigo-200 disabled:opacity-70"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                در حال ذخیره‌سازی...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                {isEditMode ? "بروزرسانی سفارش" : "ثبت سفارش"}
+              </>
+            )}
           </button>
         </div>
       </div>

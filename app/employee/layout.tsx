@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import Header from "@/components/sidebarAndHeader/headerForEmployee";
-import Sidebar from "@/components/sidebarAndHeader/sidebarForEmployee";
 import { Metadata } from "next";
+import EmployeeLayoutClient from "@/components/lauout/employeeLayoutClient";
 
 export const metadata: Metadata = {
   title: {
@@ -52,13 +51,5 @@ export default async function EmployeeLayout({
     redirect("/admin/dashboard");
   }
 
-  return (
-    <div className="min-h-screen flex bg-slate-100">
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
-      </div>
-    </div>
-  );
+  return <EmployeeLayoutClient>{children}</EmployeeLayoutClient>;
 }

@@ -39,14 +39,16 @@ export default function KpiCards({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2"
+          className="p-4 md:p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-1.5 md:space-y-2"
         >
-          <span className="text-gray-500 text-sm font-medium">{card.title}</span>
-          <div className="text-3xl font-extrabold text-gray-800">{card.value}</div>
+          <span className="text-gray-500 text-xs md:text-sm font-medium">{card.title}</span>
+          <div className="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">
+            {card.value}
+          </div>
           <div className={`text-xs font-medium ${card.badgeColor}`}>{card.subtext}</div>
         </div>
       ))}

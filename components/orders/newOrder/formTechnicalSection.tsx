@@ -14,11 +14,15 @@ export default function FormTechnicalSection({
   setMaterialType,
 }: FormTechnicalSectionProps) {
   return (
-    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
-      <h4 className="text-sm font-bold text-slate-700 border-r-4 border-indigo-500 pr-2">جزئیات طراحی و متریال</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="bg-slate-50/80 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 space-y-4">
+      <h4 className="text-sm font-bold text-slate-800 border-r-4 border-indigo-500 pr-2.5">
+        جزئیات طراحی و متریال
+      </h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">سبک طراحی</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            سبک طراحی
+          </label>
           <select
             value={cabinetType}
             onChange={(e) => setCabinetType(e.target.value)}
@@ -30,7 +34,9 @@ export default function FormTechnicalSection({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">جنس ورق / بدنه</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            جنس ورق / بدنه
+          </label>
           <select
             value={materialType}
             onChange={(e) => setMaterialType(e.target.value)}

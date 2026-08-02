@@ -1,4 +1,3 @@
-// app/dashboard/customers/_components/CustomerListContainer.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,6 +5,7 @@ import { Search, Filter } from "lucide-react";
 import CustomerTable from "./customerTable";
 import CustomerDetailSidebar from "./customerDetailsSidebar";
 import EditCustomerModal from "./editCustomerModal";
+import StatsCards from "./statsCards";
 
 export interface Customer {
   id: string;
@@ -31,30 +31,40 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // منطق فیلتر و جستجوی مشتریان
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          customer.phone.includes(searchQuery);
+  const totalCustomersCount = customers.length;
+  const activeCustomersCount = customers.filter((c) => c.status === "active").length;
+  const totalRevenueSum = customers.reduce((acc, curr) => acc + curr.totalSpent, 0);
+
+  const filteredCustomers = customers.filter((customer) => {
+    const matchesSearch =
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone.includes(searchQuery);
     const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const handleCustomerUpdated = (updatedCustomer: Customer) => {
     setCustomers((prev) => prev.map((c) => (c.rawId === updatedCustomer.rawId ? updatedCustomer : c)));
-    setSelectedCustomer(updatedCustomer); 
+    setSelectedCustomer(updatedCustomer);
   };
 
   return (
-    <div className="h-full bg-slate-50/50 flex flex-col p-6">
+    <div className="min-h-full bg-slate-50/50 flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6 dir-rtl">
       
-      {/* هدر صفحه مشتریان */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-slate-800">مدیریت مشتریان</h1>
+      <div>
+        <h1 className="text-lg sm:text-xl font-bold text-slate-800">مدیریت مشتریان</h1>
         <p className="text-xs text-slate-500 mt-1">لیست خریداران، تاریخچه سفارشات کابینت و وضعیت حساب‌ها</p>
       </div>
 
-      {/* نوار فیلتر و جستجو (کاملاً بازنویسی و بازگردانده شد) */}
-      <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="-mx-6 -mt-6">
+        <StatsCards
+          totalCustomers={totalCustomersCount}
+          activeCustomers={activeCustomersCount}
+          totalRevenue={totalRevenueSum}
+        />
+      </div>
+
+      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
           <input
@@ -62,15 +72,15 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
             placeholder="جستجوی نام مشتری یا شماره تماس..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-9 pl-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-800"
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg pr-9 pl-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-800 placeholder:text-slate-400"
           />
         </div>
         <div className="flex items-center gap-2 min-w-[160px]">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-slate-400 shrink-0" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700"
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:bg-white transition text-slate-700 cursor-pointer"
           >
             <option value="all">همه وضعیت‌ها</option>
             <option value="active">مشتریان فعال</option>
@@ -80,13 +90,10 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
         </div>
       </div>
 
-      {/* چیدمان موازی و هم‌راستای جدول و سایدبار */}
-      <div className="flex flex-col lg:flex-row gap-6 items-stretch flex-1">
-        
-        {/* ستون سمت راست: جدول اصلی مشتریان */}
-        <div className="flex-1 transition-all duration-300 min-w-0">
-          <CustomerTable 
-            customers={filteredCustomers} 
+      <div className="flex flex-col lg:flex-row gap-6 items-start flex-1 min-h-0">
+        <div className="w-full flex-1 min-w-0">
+          <CustomerTable
+            customers={filteredCustomers}
             selectedCustomerId={selectedCustomer?.id}
             onSelectCustomer={(c) => {
               setSelectedCustomer(c);
@@ -95,8 +102,7 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
           />
         </div>
 
-        {/* ستون سمت چپ: سایدبار جزئیات متناسب با قد جدول */}
-        <CustomerDetailSidebar 
+        <CustomerDetailSidebar
           customer={selectedCustomer}
           isOpen={isDetailOpen}
           onClose={() => setIsDetailOpen(false)}
@@ -104,12 +110,11 @@ export default function CustomerListContainer({ initialCustomers }: CustomerList
         />
       </div>
 
-      {/* مدال ویرایش اطلاعات مشتری */}
-      <EditCustomerModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
-        customer={selectedCustomer} 
-        onCustomerUpdated={handleCustomerUpdated} 
+      <EditCustomerModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        customer={selectedCustomer}
+        onCustomerUpdated={handleCustomerUpdated}
       />
     </div>
   );

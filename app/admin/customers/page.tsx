@@ -53,17 +53,17 @@ export default async function CustomersPage() {
     };
   });
 
-  const totalCustomersCount = formattedCustomers.length;
-  const activeCustomersCount = formattedCustomers.filter(c => c.status === "active").length;
-  const totalSystemRevenue = formattedCustomers.reduce((sum, c) => sum + c.totalSpent, 0);
+  // const totalCustomersCount = formattedCustomers.length;
+  // const activeCustomersCount = formattedCustomers.filter(c => c.status === "active").length;
+  // const totalSystemRevenue = formattedCustomers.reduce((sum, c) => sum + c.totalSpent, 0);
 
   return (
     <div className="h-full bg-slate-50/50 flex flex-col">
-      <StatsCards 
+      {/* <StatsCards 
         totalCustomers={totalCustomersCount}
         activeCustomers={activeCustomersCount}
         totalRevenue={totalSystemRevenue}
-      />
+      /> */}
 
       <div className="flex-1">
         <CustomerListContainer initialCustomers={formattedCustomers} />

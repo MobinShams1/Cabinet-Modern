@@ -7,10 +7,15 @@ import {
   ChevronDown, 
   LogOut, 
   User,
+  Menu,
 } from "lucide-react";
 import { logout } from "@/services/auth.service";
 
-export default function Header() {
+interface HeaderProps {
+  onOpenMobileMenu?: () => void;
+}
+
+export default function Header({ onOpenMobileMenu }: HeaderProps) {
   const { user, loading, refreshUser } = useUser();
   const router = useRouter();
   const pathname = usePathname(); 
@@ -24,16 +29,14 @@ export default function Header() {
     if (pathname.includes("/admin/customers")) return "مدیریت مشتریان و کارفرمایان";
     if (pathname.includes("/admin/orders")) return "سفارشات و پروژه‌های کابینت";
     if (pathname.includes("/admin/profile")) return "پروفایل کاربری";
-    if(pathname.includes("/admin/reports")) return "گزارشات";
-    if(pathname.includes("/admin/employee")) return "کارکنان";
-    
-    
+    if (pathname.includes("/admin/reports")) return "گزارشات";
+    if (pathname.includes("/admin/employee")) return "کارکنان";
+    return "سامانه مدیریت";
   };
 
   const handleLogOut = async () => {
     try {
       setIsLoggingOut(true);
-      
       const { error } = await logout();
       
       if (error) {
@@ -42,12 +45,9 @@ export default function Header() {
       }
 
       setIsDropdownOpen(false);
-      
       await refreshUser?.();
-      
       router.push("/login");
       router.refresh(); 
-      
     } catch (error) {
       console.error("Unexpected error during logout:", error);
     } finally {
@@ -65,10 +65,21 @@ export default function Header() {
   };
 
   return (
-    <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between">
-      <h2 className="text-xl font-bold text-slate-800 transition-all duration-200">
-        {getPageTitle()}
-      </h2>
+    <header className="h-20 bg-white border-b border-slate-200 px-4 md:px-8 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {/* دکمه همبرگری موبایل */}
+        <button
+          onClick={onOpenMobileMenu}
+          className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition"
+          aria-label="باز کردن منو"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
+        <h2 className="text-base md:text-xl font-bold text-slate-800 transition-all duration-200">
+          {getPageTitle()}
+        </h2>
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="relative">
