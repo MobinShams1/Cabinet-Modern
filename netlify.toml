@@ -1,9 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# جلوگیری از کش شدن صفحات HTML و داتا (کلیدی‌ترین بخش)
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# کش کردن فایل‌های استاتیک که نام hashes دارند (برای سرعت بالای سایت)
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# عدم کش شدن فایل‌های JSON مربوط به Next.js Data
+[[headers]]
+  for = "/_next/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

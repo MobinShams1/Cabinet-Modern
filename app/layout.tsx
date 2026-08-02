@@ -9,6 +9,8 @@ import { Viewport, Metadata } from "next";
 import RegisterSW from "@/components/registerSW";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export const viewport: Viewport = {
   themeColor: "#0f172a",
