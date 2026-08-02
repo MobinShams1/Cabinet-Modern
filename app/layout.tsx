@@ -7,10 +7,12 @@ import { Toaster } from "sonner";
 import SessionManager from "@/components/sessionManager";
 import { Viewport, Metadata } from "next";
 import RegisterSW from "@/components/registerSW";
+import PwaCleaner from "@/components/pwaCleaner";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const viewport: Viewport = {
   themeColor: "#0f172a",
@@ -46,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" className={cn("font-sans", geist.variable)}>
       <body>
+        <PwaCleaner />
         <RegisterSW />
         <UserProvider>{children}</UserProvider>
         <Toaster
