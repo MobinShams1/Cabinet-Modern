@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cabinet-erp-v2';
+const CACHE_NAME = 'cabinet-erp-v3';
 
 const STATIC_ASSETS = [
   '/manifest.json',
@@ -34,8 +34,16 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
   const url = new URL(event.request.url);
-  if (url.pathname.startsWith('/api/')) return;
+
+  if (
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/_next/') ||
+    url.pathname.includes('hot-reloader')
+  ) {
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)
