@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/services/auth.service";
-import { supabase } from "@/lib/supabase/client";
 import {
   EnvelopeIcon,
   KeyIcon,
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,6 +34,7 @@ export default function LoginPage() {
 
       if (error) {
         setError(error.message);
+        toast.error(error.message);
         return;
       }
 
@@ -45,6 +46,7 @@ export default function LoginPage() {
         setError(err.message);
       } else {
         setError("خطایی رخ داده است.");
+        toast.error("خطایی رخ داده است.");
       }
     } finally {
       setLoading(false);
